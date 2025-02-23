@@ -1,0 +1,93 @@
+.main-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-width: 600px;
+  }
+  
+  /* 콤보박스는 고정 너비를 지정 */
+  .search-container select {
+    padding: 10px;
+    font-size: 16px;
+    width: 120px; /* 원하는 고정 너비 (예: 120px) */
+    flex: 0 0 auto;
+  }
+  
+  /* 검색창은 flex로 남은 공간 모두 차지 */
+  .search-container input {
+    padding: 10px;
+    font-size: 16px;
+    flex: 1;
+  }
+  
+  /* 검색 버튼은 그대로 유지 */
+  .search-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    width: auto !important;
+    flex: 0 0 auto;
+  }
+  
+  .search-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .popular-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .popular-recipes,
+  .recipes-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .recipe-card {
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .recipe-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .recipe-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .recipe-card h3 {
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+  }
+  
+  .no-results {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+    margin-top: 20px;
+  }
