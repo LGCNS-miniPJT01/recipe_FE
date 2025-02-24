@@ -23,6 +23,7 @@ export default function Layout() {
           <div className="logo" onClick={() => navigate("/")}>
             <img src="/images/logo-placeholder.png" alt="로고" className="logo-img" />
           </div>
+          {/* 일반 회원일 때 */}
           {user && user.role === "member" && !hideSidebarBottom && (
             <div className="sidebar-group-top">
               <button className="sidebar-btn" onClick={() => navigate("/scrapedRecipe")}>
@@ -36,9 +37,24 @@ export default function Layout() {
               </button>
             </div>
           )}
+          {/* 관리자일 때 */}
+          {user && user.role === "admin" && !hideSidebarBottom && (
+            <div className="sidebar-group-top">
+              <button className="sidebar-btn" onClick={() => navigate("/deleteRecipe")}>
+                레시피 삭제
+              </button>
+              <button className="sidebar-btn" onClick={() => navigate("/reportManagement")}>
+                신고 관리
+              </button>
+              <button className="sidebar-btn" onClick={() => navigate("/userManagement")}>
+                사용자 관리
+              </button>
+            </div>
+          )}
         </div>
         {!hideSidebarBottom && (
           <>
+            {/* 일반 회원 하단 그룹: 프로필 + 로그아웃 */}
             {user && user.role === "member" ? (
               <div className="sidebar-group-bottom">
                 <button className="sidebar-btn" onClick={() => navigate("/profile")}>
@@ -48,11 +64,19 @@ export default function Layout() {
                   로그아웃
                 </button>
               </div>
-            ) : (
-              <button className="login-btn" onClick={() => navigate("/login")}>
-                로그인
-              </button>
-            )}
+            ) :
+              /* 관리자 하단 그룹: 로그아웃만 */
+              user && user.role === "admin" ? (
+                <div className="sidebar-group-bottom">
+                  <button className="sidebar-btn" onClick={handleLogout}>
+                    로그아웃
+                  </button>
+                </div>
+              ) : (
+                <button className="login-btn" onClick={() => navigate("/login")}>
+                  로그인
+                </button>
+              )}
           </>
         )}
       </aside>

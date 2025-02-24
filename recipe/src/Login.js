@@ -15,11 +15,12 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     // 간단한 로그인 검증 (추후 백엔드 연동 필요)
-    if (email === "hong@example.com" && password === "hong123") {
+    if (email === "admin@example.com" && password === "admin123") {
+      setUser({ email: email, role: "admin" });
+      navigate("/");
+    } else if (email === "hong@example.com" && password === "hong123") {
       setUser({ email: email, role: "member" });
-      // 이전 페이지가 있다면 그곳으로, 없으면 기본 경로("/")로 이동
-      const redirectTo = location.state?.redirectBack || "/";
-      navigate(redirectTo);
+      navigate("/");
     } else {
       setError("아이디 또는 비밀번호를 잘못입력하셨습니다");
     }
