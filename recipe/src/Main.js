@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CiSearch } from "react-icons/ci";
 import "./Main.css";
 
 const dummyRecipes = [
@@ -59,7 +60,7 @@ export default function Main() {
   return (
     <div className="main-container">
       {/* 검색 바 */}
-      <form className="search-container" onSubmit={handleSearch}>
+      <form className="search-bar" onSubmit={handleSearch}>
         <select value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="재료">재료</option>
           <option value="국">국</option>
@@ -73,7 +74,9 @@ export default function Main() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button type="submit" className="search-btn">검색</button>
+        <button type="submit">
+          <CiSearch size={24} />
+        </button>
       </form>
 
       {/* 검색 결과 또는 인기 레시피 */}
@@ -98,7 +101,7 @@ export default function Main() {
         <>
           <h2 className="popular-title">인기 레시피</h2>
           <div className="popular-recipes">
-            {dummyRecipes.map((recipe) => (
+            {dummyRecipes.slice(0, 3).map((recipe) => (
               <div
                 key={recipe.id}
                 className="recipe-card"

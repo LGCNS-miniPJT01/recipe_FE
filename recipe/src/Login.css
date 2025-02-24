@@ -1,85 +1,61 @@
 .login-container {
-    width: 400px;
-    margin: 50px auto;
-    padding: 20px 30px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .login-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-  }
-  
-  .login-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group label {
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .form-group input::placeholder {
-    color: #aaa;
-  }
-  
-  .error-message {
-    color: red;
-    text-align: center;
-    margin-bottom: 15px;
-    font-size: 14px;
-  }
-  
-  button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #0056b3;
-  }
-  
-  .login-links {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    font-size: 14px;
-  }
-  
-  .login-links p {
-    cursor: pointer;
-    color: #007bff;
-    text-decoration: underline;
-  }
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px 30px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* hover 상태 등도 동일하게 */
+.login-container button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.login-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.login-links p {
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}

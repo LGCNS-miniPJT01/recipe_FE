@@ -7,8 +7,6 @@ export default function ScrapedRecipe() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
-  // 실제 구현 시 백엔드 API를 통해 사용자별 스크랩 레시피 데이터를 가져와야 합니다.
-  // 여기서는 더미 데이터를 사용합니다.
   const dummyScrapedRecipes = [
     {
       id: "1",
@@ -28,18 +26,37 @@ export default function ScrapedRecipe() {
   ];
 
   const [scrapedRecipes, setScrapedRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (user) {
-      // 실제로는 user.id 등의 정보를 이용해 API 호출을 수행합니다.
-      setScrapedRecipes(dummyScrapedRecipes);
+      setLoading(true);
+      // 실제 구현 시 API 호출 (여기서는 1초 후 dummy 데이터를 설정)
+      setTimeout(() => {
+        try {
+          // API 호출 성공 시:
+          setScrapedRecipes(dummyScrapedRecipes);
+          setLoading(false);
+        } catch (err) {
+          setError("데이터를 불러오지 못했습니다.");
+          setLoading(false);
+        }
+      }, 1000);
+    } else {
+      setScrapedRecipes([]);
+      setLoading(false);
     }
   }, [user]);
 
   return (
     <div className="scraped-recipe-container">
       <h2>내가 스크랩한 레시피</h2>
-      {scrapedRecipes.length > 0 ? (
+      {loading ? (
+        <p className="loading-message">데이터를 불러오는 중입니다...</p>
+      ) : error ? (
+        <p className="error-message">{error}</p>
+      ) : scrapedRecipes.length > 0 ? (
         <div className="recipes-grid">
           {scrapedRecipes.map((recipe) => (
             <div
@@ -53,7 +70,12 @@ export default function ScrapedRecipe() {
           ))}
         </div>
       ) : (
-        <p>스크랩한 레시피가 없습니다.</p>
+        <div className="empty-message">
+          <p>스크랩한 레시피가 없습니다.</p>
+          <button className="find-recipes-btn" onClick={() => navigate("/")}>
+            레시피를 찾아보세요
+          </button>
+        </div>
       )}
     </div>
   );

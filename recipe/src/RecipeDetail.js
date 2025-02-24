@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import "./RecipeDetail.css";
+import { MdOutlineRemoveRedEye, MdOutlineFileUpload } from "react-icons/md";
+import { BiLike } from "react-icons/bi";
+import { FaRegStar } from "react-icons/fa";
 
 // 더미 데이터 (실제 구현 시 API 연동 예정)
 const dummyRecipes = [
@@ -9,8 +12,11 @@ const dummyRecipes = [
     id: "1",
     title: "두부 국",
     ingredients: "두부, 국물, 소금",
-    steps:
-      "1. 두부를 깍둑썰기 합니다.\n2. 국물 재료를 준비합니다.\n3. 모든 재료를 넣고 끓입니다.",
+    steps: [
+      { text: "두부를 깍둑썰기 합니다.", image: "https://via.placeholder.com/600x400?text=Step+1" },
+      { text: "국물 재료를 준비합니다.", image: "https://via.placeholder.com/600x400?text=Step+2" },
+      { text: "모든 재료를 넣고 끓입니다.", image: "https://via.placeholder.com/600x400?text=Step+3" }
+    ],
     image: "https://via.placeholder.com/600x400?text=두부+국",
     views: 123,
     likes: 10
@@ -19,8 +25,11 @@ const dummyRecipes = [
     id: "2",
     title: "두부 찜",
     ingredients: "두부, 고추장, 설탕, 참기름",
-    steps:
-      "1. 두부를 준비합니다.\n2. 양념장을 만듭니다.\n3. 두부 위에 양념장을 얹고 찝니다.",
+    steps: [
+      { text: "두부를 준비합니다.", image: "https://via.placeholder.com/600x400?text=Step+1" },
+      { text: "양념장을 만듭니다.", image: "https://via.placeholder.com/600x400?text=Step+2" },
+      { text: "두부 위에 양념장을 얹고 찝니다.", image: "https://via.placeholder.com/600x400?text=Step+3" }
+    ],
     image: "https://via.placeholder.com/600x400?text=두부+찜",
     views: 45,
     likes: 5
@@ -41,13 +50,20 @@ export default function RecipeDetail() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
-  // 페이지 로드시 조회수 증가 (더미 구현)
+  // 플래그: 조회수를 한 번만 증가시키기 위해 사용
+  const [viewCountIncremented, setViewCountIncremented] = useState(false);
+
+  // 댓글 추가 후 자동 스크롤을 위한 ref
+  const commentsEndRef = useRef(null);
+
+  // 페이지 로드시 recipe가 로드되면 한 번만 조회수 증가
   useEffect(() => {
-    if (recipe) {
+    if (recipe && !viewCountIncremented) {
       setViews((prev) => prev + 1);
-      // 실제 구현 시 백엔드에 조회수 증가 API 호출
+      setViewCountIncremented(true);
+      // 실제 구현 시 백엔드 조회수 증가 API 호출
     }
-  }, [recipe]);
+  }, [recipe, viewCountIncremented]);
 
   const toggleLike = () => {
     if (isLiked) {
@@ -62,7 +78,6 @@ export default function RecipeDetail() {
   const toggleSave = () => {
     if (!user) {
       alert("로그인이 필요합니다.");
-      // 현재 경로를 state에 담아 로그인 후 다시 돌아올 수 있게 함
       navigate("/login", { state: { redirectBack: window.location.pathname } });
       return;
     }
@@ -87,6 +102,10 @@ export default function RecipeDetail() {
     if (newComment.trim()) {
       setComments([...comments, newComment.trim()]);
       setNewComment("");
+      // 댓글 추가 후, 댓글 목록 끝으로 스크롤 이동
+      setTimeout(() => {
+        commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
       // 실제 구현 시 백엔드에 댓글 추가 API 호출
     }
   };
@@ -113,40 +132,59 @@ export default function RecipeDetail() {
             <div className="recipe-center">
               <h1 className="recipe-title">{recipe.title}</h1>
               <div className="recipe-steps">
-                <pre>{recipe.steps}</pre>
+                {Array.isArray(recipe.steps)
+                  ? recipe.steps.map((step, index) => (
+                    <div key={index} className="recipe-step">
+                      <p>{step.text}</p>
+                      {step.image && (
+                        <img
+                          src={step.image}
+                          alt={`Step ${index + 1}`}
+                          className="step-image"
+                        />
+                      )}
+                    </div>
+                  ))
+                  : recipe.steps.split("\n").map((line, index) => (
+                    <p key={index}>{line}</p>
+                  ))}
               </div>
             </div>
           </div>
           <div className="recipe-stats">
-            <span>조회수: {views}</span>
+            <span className="stat-btn">
+              <MdOutlineRemoveRedEye size={20} /> {views}
+            </span>
             <span
               onClick={toggleLike}
               className={`stat-btn ${isLiked ? "active" : ""}`}
             >
-              좋아요: {likes}
+              <BiLike size={20} /> {likes}
             </span>
             <span
               onClick={toggleSave}
               className={`stat-btn ${isSaved ? "active" : ""}`}
             >
-              {isSaved ? "저장됨" : "저장"}
+              <FaRegStar size={20} />
             </span>
             <span onClick={handleShare} className="stat-btn">
-              공유
+              <MdOutlineFileUpload size={20} />
             </span>
           </div>
           <div className="comments-section">
-            <h2>댓글</h2>
             <form onSubmit={handleAddComment} className="comment-form">
+              <div className="comment-header">
+                <span className="comment-title">댓글</span>
+                <button type="submit" className="comment-btn">
+                  등록
+                </button>
+              </div>
               <textarea
                 placeholder="댓글을 입력하세요"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 required
               ></textarea>
-              <button type="submit" className="comment-btn">
-                등록
-              </button>
             </form>
             <div className="comments-list">
               {comments.length > 0 ? (
@@ -158,6 +196,7 @@ export default function RecipeDetail() {
               ) : (
                 <p>댓글이 없습니다.</p>
               )}
+              <div ref={commentsEndRef} />
             </div>
           </div>
         </>

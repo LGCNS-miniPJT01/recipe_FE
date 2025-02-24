@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
+import FormGroup from "./FormGroup";
 
 const existingUsers = [
   { name: "홍길동", phone: "01012345678", email: "hong@example.com" }
@@ -40,63 +41,53 @@ const SignUp = () => {
     <div className="signup-container">
       <h2>회원가입</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>이름</label>
-          <input
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="이름을 입력하세요"
-            required
-          />
-        </div>
-        <div className="form-group">
-            <label>전화번호</label>
-            <input
-                type="text"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="예) 01012345678"
-                pattern="\d{11}"
-                title="전화번호는 숫자 11자리(01012345678)로 입력해주세요."
-                required
-            />
-        </div>
-        <div className="form-group">
-          <label>이메일</label>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="예) abc@gmail.com"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>비밀번호</label>
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            placeholder="비밀번호를 입력하세요"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>비밀번호 확인</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            placeholder="비밀번호를 한 번 더 입력하세요"
-            required
-          />
-        </div>
+        <FormGroup
+          label="이름"
+          name="name"
+          type="text"
+          placeholder="이름을 입력하세요"
+          value={form.name}
+          onChange={handleChange}
+          required
+        />
+        <FormGroup
+          label="전화번호"
+          name="phone"
+          type="text"
+          placeholder="예) 01012345678"
+          value={form.phone}
+          onChange={handleChange}
+          pattern="\d{11}"
+          title="전화번호는 숫자 11자리(01012345678)로 입력해주세요."
+          required
+        />
+        <FormGroup
+          label="이메일"
+          name="email"
+          type="email"
+          placeholder="예) abc@gmail.com"
+          value={form.email}
+          onChange={handleChange}
+          required
+        />
+        <FormGroup
+          label="비밀번호"
+          name="password"
+          type="password"
+          placeholder="비밀번호를 입력하세요"
+          value={form.password}
+          onChange={handleChange}
+          required
+        />
+        <FormGroup
+          label="비밀번호 확인"
+          name="confirmPassword"
+          type="password"
+          placeholder="비밀번호를 한 번 더 입력하세요"
+          value={form.confirmPassword}
+          onChange={handleChange}
+          required
+        />
         {error && <div className="error-message">{error}</div>}
         <button type="submit">회원가입</button>
       </form>

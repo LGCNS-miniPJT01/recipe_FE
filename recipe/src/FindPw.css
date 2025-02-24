@@ -1,78 +1,54 @@
 .findpw-container {
-    width: 400px;
-    margin: 50px auto;
-    padding: 20px 30px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .findpw-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-  }
-  
-  .findpw-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group label {
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .form-group input::placeholder {
-    color: #aaa;
-  }
-  
-  .error-message {
-    color: red;
-    text-align: center;
-    margin-bottom: 15px;
-    font-size: 14px;
-  }
-  
-  .findpw-form button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .findpw-form button:hover {
-    background-color: #0056b3;
-  }
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px 30px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .back-to-login {
-    cursor: pointer;
-    color: blue;
-    margin-top: 15px;
-    text-decoration: underline;
-    font-size: 14px;
-  }  
+.findpw-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.findpw-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.findpw-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.findpw-form button:hover {
+  background-color: #0056b3;
+}
+
+.back-to-login {
+  cursor: pointer;
+  color: blue;
+  margin-top: 15px;
+  text-decoration: underline;
+  font-size: 14px;
+}
