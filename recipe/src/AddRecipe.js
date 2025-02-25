@@ -171,13 +171,31 @@ export default function AddRecipe() {
           )}
         </div>
 
-        {/* 열량 입력 (숫자만 입력) */}
+        {/* 부가 사진 등록 */}
         <div className="form-group">
-          <label>열량</label>
+          <label>부가 사진 등록</label>
           <input
-            placeholder="열량을 입력하세요 (kcal)"
-            value={calorie}
-            onChange={(e) => setCalorie(e.target.value)}
+            type="file"
+            accept="image/*"
+            onChange={handleImageSmallChange}
+          />
+          {imageSmallPreview && (
+            <img
+              src={imageSmallPreview}
+              alt="부가 사진 미리보기"
+              className="image-preview"
+            />
+          )}
+        </div>
+
+        {/* 카테고리 입력 */}
+        <div className="form-group">
+          <label>카테고리</label>
+          <input
+            type="text"
+            placeholder="음식 종류를 입력하세요(찜, 조림, 볶음, 구이, 탕 등)"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             required
           />
         </div>
@@ -209,7 +227,7 @@ export default function AddRecipe() {
           <label>카테고리</label>
           <input
             type="text"
-            placeholder="레시피 카테고리를 입력하세요"
+            placeholder="음식 종류를 입력하세요(찜, 조림, 볶음, 구이, 탕 등)"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             required
@@ -240,21 +258,15 @@ export default function AddRecipe() {
           />
         </div>
 
-        {/* 작은 이미지 등록 */}
+        {/* 열량 입력 (숫자만 입력) */}
         <div className="form-group">
-          <label>작은 이미지 등록</label>
+          <label>열량</label>
           <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageSmallChange}
+            placeholder="열량을 입력하세요 (kcal)"
+            value={calorie}
+            onChange={(e) => setCalorie(e.target.value)}
+            required
           />
-          {imageSmallPreview && (
-            <img
-              src={imageSmallPreview}
-              alt="작은 이미지 미리보기"
-              className="image-preview"
-            />
-          )}
         </div>
 
         {/* 만드는 방법 - Step 별로 입력 */}
