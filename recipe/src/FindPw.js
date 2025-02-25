@@ -3,34 +3,49 @@ import { useNavigate } from "react-router-dom";
 import "./FindPw.css";
 import FormGroup from "./FormGroup";
 
-const users = [
-  { name: "홍길동", phone: "01012345678", email: "hong@example.com" }
-];
-
 const FindPW = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [error, setError] = useState("");
+  const [message, setMessage] = useState(""); // 응답 메시지 표시용
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
+    setMessage(""); // 메시지 초기화
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const user = users.find(
-      (u) =>
-        u.name === form.name &&
-        u.email === form.email &&
-        u.phone === form.phone
-    );
 
-    if (user) {
-      alert("비밀번호를 재설정합니다");
-      navigate("/resetPw");
-    } else {
-      setError("잘못 입력했거나 등록되지 않은 계정입니다.");
+    try {
+      const response = await fetch("http://localhost:8080/api/users/findpwuser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: form.name,
+          email: form.email,
+          phone: form.phone,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("서버 응답 오류");
+      }
+
+      const data = await response.text();
+
+      if (response.ok) {
+        alert("비밀번호를 재설정합니다.");
+        navigate("/resetPw", { state: { email: form.email } });
+      } else {
+        setError("잘못 입력했거나 등록되지 않은 계정입니다.");
+      }
+    } catch (error) {
+      console.error("비밀번호 찾기 요청 실패:", error);
+      setError("서버와의 연결에 문제가 발생했습니다.");
     }
   };
 
@@ -68,6 +83,7 @@ const FindPW = () => {
           required
         />
         {error && <p className="error-message">{error}</p>}
+        {message && <p className="success-message">{message}</p>}
         <button type="submit">비밀번호 재설정</button>
       </form>
       <p onClick={() => navigate("/login")} className="back-to-login">
