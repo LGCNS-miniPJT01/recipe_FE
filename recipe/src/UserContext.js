@@ -4,7 +4,6 @@ export const UserContext = createContext(null);
 
 export function UserProvider({ children }) {
   // 초기값을 localStorage에서 불러오기
-  // 저장된 user 객체는 반드시 role 프로퍼티("admin" 또는 "member")를 포함해야 합니다.
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -17,6 +16,18 @@ export function UserProvider({ children }) {
       localStorage.removeItem("user");
     }
   }, [user]);
+
+  // localStorage의 변경(다른 탭 등)을 감지해서 user 상태를 업데이트
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "user") {
+        setUser(e.newValue ? JSON.parse(e.newValue) : null);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
