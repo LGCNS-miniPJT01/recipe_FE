@@ -10,16 +10,40 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // 간단한 로그인 검증 (추후 백엔드 연동 필요)
-    if (email === "hong@example.com" && password === "hong123") {
-      setUser({ email: email, role: "member" });
-      navigate("/");
-    } else {
-      setError("아이디 또는 비밀번호를 잘못입력하셨습니다");
+  
+    try {
+      const response = await fetch("http://localhost:8080/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
+      }
+  
+      const token = await response.text(); // JSON 대신 text() 사용
+  
+      if (token.startsWith("{")) {
+        // 만약 응답이 JSON이면 JSON으로 변환
+        const data = JSON.parse(token);
+        localStorage.setItem("jwt", data.token);
+      } else {
+        // 순수한 문자열(JWT)일 경우 바로 저장
+        localStorage.setItem("jwt", token);
+      }
+  
+      setUser({ email, role: "member" }); // 사용자 정보 업데이트
+      navigate("/"); // 홈으로 이동
+    } catch (err) {
+      setError(err.message);
     }
   };
+  
 
   return (
     <div className="login-container">

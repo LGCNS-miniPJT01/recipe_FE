@@ -2,19 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
 
-const existingUsers = [
-  { name: "홍길동", phone: "01012345678", email: "hong@example.com" }
-];
-
 const SignUp = () => {
   const [form, setForm] = useState({
-    name: "",
+    username: "",
     phone: "",
     email: "",
     password: "",
     confirmPassword: ""
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,18 +19,45 @@ const SignUp = () => {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (existingUsers.some(user => user.email === form.email)) {
-      setError("이미 등록된 회원 정보입니다");
-      return;
-    }
+
+    // 비밀번호 확인
     if (form.password !== form.confirmPassword) {
       setError("비밀번호를 다시 확인해주세요");
       return;
     }
-    alert("회원가입이 완료되었습니다");
-    navigate("/login");
+
+    // 회원가입 요청 데이터
+    const userData = {
+      username: form.username,
+      phone: form.phone,
+      email: form.email,
+      password: form.password
+    };
+
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if (response.ok) {
+        alert("회원가입이 완료되었습니다");
+        navigate("/login");
+      } else {
+        const data = await response.json();
+        setError(data.message || "회원가입에 실패했습니다");
+      }
+    } catch (error) {
+      setError("서버와의 통신 중 오류가 발생했습니다");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,17 +76,17 @@ const SignUp = () => {
           />
         </div>
         <div className="form-group">
-            <label>전화번호</label>
-            <input
-                type="text"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="예) 01012345678"
-                pattern="\d{11}"
-                title="전화번호는 숫자 11자리(01012345678)로 입력해주세요."
-                required
-            />
+          <label>전화번호</label>
+          <input
+            type="text"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder="예) 01012345678"
+            pattern="\d{11}"
+            title="전화번호는 숫자 11자리(01012345678)로 입력해주세요."
+            required
+          />
         </div>
         <div className="form-group">
           <label>이메일</label>
@@ -98,7 +122,9 @@ const SignUp = () => {
           />
         </div>
         {error && <div className="error-message">{error}</div>}
-        <button type="submit">회원가입</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "회원가입 중..." : "회원가입"}
+        </button>
       </form>
       <p onClick={() => navigate("/login")} className="back-to-login">
         로그인으로 돌아가기
