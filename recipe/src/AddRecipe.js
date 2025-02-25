@@ -9,6 +9,12 @@ export default function AddRecipe() {
   const [title, setTitle] = useState("");
   const [calorie, setCalorie] = useState("");
   const [ingredients, setIngredients] = useState("");
+  const [cookingMethod, setCookingMethod] = useState("");
+  const [category, setCategory] = useState("");
+  const [hashTag, setHashTag] = useState("");
+  const [weight, setWeight] = useState("");
+  const [imageSmall, setImageSmall] = useState(null);
+  const [imageSmallPreview, setImageSmallPreview] = useState("");
 
   // 메인 사진 관련 state
   const [mainImageFile, setMainImageFile] = useState(null);
@@ -26,6 +32,18 @@ export default function AddRecipe() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setMainImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageSmallChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageSmall(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageSmallPreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -70,14 +88,63 @@ export default function AddRecipe() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // 필수 항목 확인: 제목, 메인 사진, 열량, 재료, 최소 1단계 설명
-    if (!title || !mainImageFile || !calorie || !ingredients || !steps[0].description) {
+    if (
+      !title ||
+      !mainImageFile ||
+      !calorie ||
+      !ingredients ||
+      !steps[0].description ||
+      !cookingMethod ||
+      !category ||
+      !hashTag ||
+      !weight ||
+      !imageSmall
+    ) {
       alert("필수 항목을 모두 입력해주세요.");
       return;
     }
-    // 실제 구현 시 FormData와 API 연동 처리
-    alert("레시피가 등록되었습니다!");
-    navigate("/");
+  
+    // 레시피 정보 JSON 객체로 구성
+    const recipeData = {
+      recipe: {
+        title,
+        cookingMethod,
+        category,
+        hashTag,
+        weight,
+        imageSmall: imageSmallPreview, // 작은 이미지 URL(여기서는 미리보기로 대신)
+        imageLarge: mainImagePreview, // 메인 이미지 URL(여기서는 미리보기로 대신)
+        ingredients,
+        recipeSteps: steps.map((step, index) => ({
+          stepNumber: index + 1,
+          description: step.description,
+          imageUrl: step.imagePreview // 각 스텝 미리보기 이미지
+        }))
+      }
+    };
+  
+    // POST 요청 보내기
+    fetch("http://localhost:8080/api/recipes/6", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(recipeData)
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert("레시피가 등록되었습니다!");
+          navigate("/"); // 성공 시 홈으로 이동
+        } else {
+          console.log(response);
+          throw new Error("레시피 등록 실패");
+        }
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
+  
 
   return (
     <div className="add-recipe-container">
@@ -94,6 +161,7 @@ export default function AddRecipe() {
             required
           />
         </div>
+
         {/* 메인 사진 등록 */}
         <div className="form-group">
           <label>메인 사진 등록</label>
@@ -102,6 +170,7 @@ export default function AddRecipe() {
             <img src={mainImagePreview} alt="메인 미리보기" className="image-preview" />
           )}
         </div>
+
         {/* 열량 입력 (숫자만 입력) */}
         <div className="form-group">
           <label>열량</label>
@@ -112,6 +181,7 @@ export default function AddRecipe() {
             required
           />
         </div>
+
         {/* 재료 입력 */}
         <div className="form-group">
           <label>재료</label>
@@ -122,6 +192,71 @@ export default function AddRecipe() {
             required
           ></textarea>
         </div>
+
+        {/* 조리 방법 */}
+        <div className="form-group">
+          <label>조리 방법</label>
+          <textarea
+            placeholder="조리 방법을 입력하세요"
+            value={cookingMethod}
+            onChange={(e) => setCookingMethod(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* 카테고리 입력 */}
+        <div className="form-group">
+          <label>카테고리</label>
+          <input
+            type="text"
+            placeholder="레시피 카테고리를 입력하세요"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* 해시태그 입력 */}
+        <div className="form-group">
+          <label>해시태그</label>
+          <input
+            type="text"
+            placeholder="레시피 해시태그를 입력하세요"
+            value={hashTag}
+            onChange={(e) => setHashTag(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* 무게 입력 */}
+        <div className="form-group">
+          <label>무게</label>
+          <input
+            type="text"
+            placeholder="레시피 무게를 입력하세요"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* 작은 이미지 등록 */}
+        <div className="form-group">
+          <label>작은 이미지 등록</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageSmallChange}
+          />
+          {imageSmallPreview && (
+            <img
+              src={imageSmallPreview}
+              alt="작은 이미지 미리보기"
+              className="image-preview"
+            />
+          )}
+        </div>
+
         {/* 만드는 방법 - Step 별로 입력 */}
         <div className="form-group">
           <label>만드는 방법</label>
@@ -166,6 +301,7 @@ export default function AddRecipe() {
             <CiSquarePlus size={24} />
           </button>
         </div>
+
         <div className="form-actions">
           <button type="button" onClick={() => navigate(-1)}>
             취소
