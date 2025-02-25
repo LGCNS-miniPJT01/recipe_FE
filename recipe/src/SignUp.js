@@ -3,19 +3,16 @@ import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
 import FormGroup from "./FormGroup";
 
-const existingUsers = [
-  { name: "홍길동", phone: "01012345678", email: "hong@example.com" }
-];
-
 const SignUp = () => {
   const [form, setForm] = useState({
-    name: "",
+    username: "", // 수정: name -> username
     phone: "",
     email: "",
     password: "",
     confirmPassword: ""
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,18 +20,45 @@ const SignUp = () => {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (existingUsers.some(user => user.email === form.email)) {
-      setError("이미 등록된 회원 정보입니다");
-      return;
-    }
+
+    // 비밀번호 확인
     if (form.password !== form.confirmPassword) {
       setError("비밀번호를 다시 확인해주세요");
       return;
     }
-    alert("회원가입이 완료되었습니다");
-    navigate("/login");
+
+    // 회원가입 요청 데이터
+    const userData = {
+      username: form.username, // name → username
+      phone: form.phone,
+      email: form.email,
+      password: form.password
+    };
+
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if (response.ok) {
+        alert("회원가입이 완료되었습니다");
+        navigate("/login");
+      } else {
+        const data = await response.json();
+        setError(data.message || "회원가입에 실패했습니다");
+      }
+    } catch (error) {
+      setError("서버와의 통신 중 오류가 발생했습니다");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,10 +67,10 @@ const SignUp = () => {
       <form onSubmit={handleSubmit}>
         <FormGroup
           label="이름"
-          name="name"
+          name="username" // 수정: name → username
           type="text"
           placeholder="이름을 입력하세요"
-          value={form.name}
+          value={form.username}
           onChange={handleChange}
           required
         />
@@ -89,7 +113,9 @@ const SignUp = () => {
           required
         />
         {error && <div className="error-message">{error}</div>}
-        <button type="submit">회원가입</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "회원가입 중..." : "회원가입"}
+        </button>
       </form>
       <p onClick={() => navigate("/login")} className="back-to-login">
         로그인으로 돌아가기

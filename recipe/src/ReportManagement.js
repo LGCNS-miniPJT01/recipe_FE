@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { HiOutlinePencilSquare } from "react-icons/hi2"; // 필요시 사용
+//import { HiOutlinePencilSquare } from "react-icons/hi2"; // 필요시 사용
 import "./ReportManagement.css";
 
 export default function ReportManagement() {

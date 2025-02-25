@@ -1,28 +1,57 @@
 import React, { useState, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import "./Login.css";
 import FormGroup from "./FormGroup";
 
 export default function Login() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { setUser } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // 간단한 로그인 검증 (추후 백엔드 연동 필요)
-    if (email === "admin@example.com" && password === "admin123") {
-      setUser({ email: email, role: "admin" });
-      navigate("/");
-    } else if (email === "hong@example.com" && password === "hong123") {
-      setUser({ email: email, role: "member" });
-      navigate("/");
-    } else {
-      setError("아이디 또는 비밀번호를 잘못입력하셨습니다");
+    setError("");
+    setLoading(true);
+
+    try {
+      // 백엔드 API에 로그인 요청
+      const response = await fetch("http://localhost:8080/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      // 로그인 성공 시
+      if (response.ok) {
+        // JWT 토큰을 문자열로 받아옴
+        const token = await response.text();
+
+        // JWT 토큰을 localStorage에 저장
+        localStorage.setItem("jwt", token);
+
+        // JWT 토큰을 디코딩하여 유저 정보를 추출 (예시: 이메일과 역할)
+        const decodedToken = JSON.parse(atob(token.split('.')[1])); // JWT 디코딩
+        const { email: userEmail, role } = decodedToken;
+
+        // 유저 정보 저장
+        setUser({ email: userEmail, role });
+
+        // 홈 화면으로 이동
+        navigate("/");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "로그인에 실패했습니다.");
+      }
+    } catch (err) {
+      setError("서버와의 통신 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,7 +78,9 @@ export default function Login() {
           required
         />
         {error && <div className="error-message">{error}</div>}
-        <button type="submit">로그인</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "로그인 중..." : "로그인"}
+        </button>
       </form>
       <div className="login-links">
         <p onClick={() => navigate("/findEmail")}>이메일 찾기</p>
