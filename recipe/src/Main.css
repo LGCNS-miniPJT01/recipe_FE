@@ -27,11 +27,11 @@
   border-radius: 4px;
 }
 
-/* 커스텀 셀렉트 */
+/* 커스텀 셀렉트 스타일 */
 .custom-select-container {
   position: relative;
-  width: 180px;
-  /* 드롭다운 크기를 작게 조정 */
+  width: 150px;
+  /* 드롭다운 크기 축소 */
   cursor: pointer;
 }
 
@@ -67,6 +67,7 @@
   align-items: center;
   gap: 5px;
   font-size: 12px;
+  cursor: pointer;
 }
 
 .custom-select-option:hover {
