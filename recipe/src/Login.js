@@ -17,6 +17,13 @@ export default function Login() {
     setError("");
     setLoading(true);
 
+    // 테스트용: 차단된 계정이면 로그인 차단
+    if (email === "blocked@test.com") {
+      setError("차단된 계정입니다.");
+      setLoading(false);
+      return;
+    }
+    // 테스트용 더미 계정
     if (email === "hong@test.com" && password === "hong123") {
       setUser({ email: "hong@test.com", role: "member" });
       navigate("/");

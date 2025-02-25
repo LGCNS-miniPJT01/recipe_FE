@@ -1,3 +1,4 @@
+/* 로그인 컨테이너 */
 .login-container {
   width: 400px;
   margin: 50px auto;
@@ -10,22 +11,26 @@
   align-items: center;
 }
 
+/* 로그인 제목 */
 .login-container h2 {
   text-align: center;
   margin-bottom: 20px;
   font-size: 24px;
+  color: #ff7f00; /* 주황색 */
 }
 
+/* 로그인 폼 */
 .login-form {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
+/* 로그인 버튼 */
 .login-container button {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
+  background-color: #ff7f00; /* 주황색 */
   border: none;
   border-radius: 4px;
   color: #fff;
@@ -34,11 +39,12 @@
   transition: background-color 0.3s ease;
 }
 
-/* hover 상태 등도 동일하게 */
+/* 버튼 hover 상태 */
 .login-container button:hover {
-  background-color: #0056b3;
+  background-color: #e56b00; /* 어두운 주황색 */
 }
 
+/* 오류 메시지 */
 .error-message {
   color: red;
   text-align: center;
@@ -46,6 +52,7 @@
   font-size: 14px;
 }
 
+/* 로그인 링크 */
 .login-links {
   margin-top: 20px;
   display: flex;
@@ -54,9 +61,10 @@
   font-size: 14px;
 }
 
+/* 로그인 링크 텍스트 */
 .login-links p {
   cursor: pointer;
-  color: #007bff;
+  color: #ff7f00; /* 주황색 */
   text-decoration: underline;
 }
 

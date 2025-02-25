@@ -1,3 +1,4 @@
+/* 비밀번호 찾기 컨테이너 */
 .findpw-container {
   width: 400px;
   margin: 50px auto;
@@ -10,18 +11,22 @@
   align-items: center;
 }
 
+/* 비밀번호 찾기 제목 */
 .findpw-container h2 {
   text-align: center;
   margin-bottom: 20px;
   font-size: 24px;
+  color: #ff7f00; /* 주황색 */
 }
 
+/* 비밀번호 찾기 폼 */
 .findpw-form {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
+/* 오류 메시지 */
 .error-message {
   color: red;
   text-align: center;
@@ -29,11 +34,12 @@
   font-size: 14px;
 }
 
+/* 비밀번호 찾기 버튼 */
 .findpw-form button {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #ff7f00; /* 주황색 */
+  color: white;
   border: none;
   border-radius: 4px;
   font-size: 16px;
@@ -41,13 +47,15 @@
   transition: background-color 0.3s ease;
 }
 
+/* 버튼 hover 상태 */
 .findpw-form button:hover {
-  background-color: #0056b3;
+  background-color: #e56b00; /* 어두운 주황색 */
 }
 
+/* 로그인 화면으로 돌아가기 링크 */
 .back-to-login {
   cursor: pointer;
-  color: blue;
+  color: #ff7f00; /* 주황색 */
   margin-top: 15px;
   text-decoration: underline;
   font-size: 14px;
