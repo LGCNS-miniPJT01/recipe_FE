@@ -51,8 +51,8 @@ function CustomSelect({ options, placeholder, value, onChange }) {
     setOpen(false);
   };
 
-  return (  
-    <div className="custom-select-container" onClick={toggleOpen}>      
+  return (
+    <div className="custom-select-container" onClick={toggleOpen}>
       <div className="custom-select-display">
         {value ? (
           <>
@@ -152,97 +152,97 @@ export default function Main() {
       <img src="home2.png" alt="홈" className="home-img" />
 
 
-    <div className="main-container">
-      {/* 검색 옵션 및 필터 영역 */}
-      <div className="search-filters">
-        <div className="filter-group">
-          <CustomSelect
-            options={searchOptionOptions}
-            placeholder="검색 옵션을 선택하세요"
-            value={searchOption === "전체 검색" ? "" : searchOption}
-            onChange={(option) =>
-              setSearchOption(option === "" ? "전체 검색" : option)
-            }
-          />
-        </div>
-        <div className="filter-group">
-          <CustomSelect
-            options={filterOptions.slice(1)} // "전체" 제외하고 나머지 옵션
-            placeholder="검색 필터를 선택하세요"
-            value={searchFilter === "전체" ? "" : searchFilter}
-            onChange={(option) =>
-              setSearchFilter(option === "" ? "전체" : option)
-            }
-          />
-        </div>
-      </div>
-      {/* 검색 폼: 입력창 내부에 검색 버튼 포함 */}
-      <form className="search-form" onSubmit={handleSearch}>
-        <div className="search-input-container">
-          <input
-            type="text"
-            placeholder="레시피를 검색하세요"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button type="submit" className="search-btn">
-            <CiSearch size={24} />
-          </button>
-        </div>
-      </form>
-      {/* 결과 또는 인기 레시피 영역 */}
-      {query ? (
-        <div className="recipes-results">
-          {dummyRecipes
-            .filter((recipe) => {
-              if (searchOption === "음식명으로 검색") {
-                return (
-                  recipe.title.toLowerCase().includes(query.toLowerCase()) &&
-                  (searchFilter === "전체" || recipe.category === searchFilter)
-                );
-              } else if (searchOption === "재료로 검색") {
-                const matchIngredient = recipe.ingredients
-                  .toLowerCase()
-                  .includes(query.toLowerCase());
-                return (
-                  matchIngredient &&
-                  (searchFilter === "전체" || recipe.category === searchFilter)
-                );
+      <div className="main-container">
+        {/* 검색 옵션 및 필터 영역 */}
+        <div className="search-filters">
+          <div className="filter-group">
+            <CustomSelect
+              options={searchOptionOptions}
+              placeholder="검색 옵션을 선택하세요"
+              value={searchOption === "전체 검색" ? "" : searchOption}
+              onChange={(option) =>
+                setSearchOption(option === "" ? "전체 검색" : option)
               }
-              return (
-                recipe.title.toLowerCase().includes(query.toLowerCase()) ||
-                recipe.ingredients.toLowerCase().includes(query.toLowerCase())
-              );
-            })
-            .map((recipe) => (
-              <div
-                key={recipe.id}
-                className="recipe-card"
-                onClick={() => navigate(`/recipe/${recipe.id}`)}
-              >
-                <img src={recipe.image} alt={recipe.title} />
-                <h3>{recipe.title}</h3>
-              </div>
-            ))}
-        </div>
-      ) : (
-        <>
-          <h2 className="popular-title">인기 레시피</h2>
-          <div className="popular-recipes">
-            {dummyRecipes.slice(0, 3).map((recipe) => (
-              <div
-                key={recipe.id}
-                className="recipe-card"
-                onClick={() => navigate(`/recipe/${recipe.id}`)}
-              >
-                <img src={recipe.image} alt={recipe.title} />
-                <h3>{recipe.title}</h3>
-              </div>
-            ))}
+            />
           </div>
-        </>
-      )}
-    </div>
+          <div className="filter-group">
+            <CustomSelect
+              options={filterOptions.slice(1)} // "전체" 제외하고 나머지 옵션
+              placeholder="검색 필터를 선택하세요"
+              value={searchFilter === "전체" ? "" : searchFilter}
+              onChange={(option) =>
+                setSearchFilter(option === "" ? "전체" : option)
+              }
+            />
+          </div>
+        </div>
+        {/* 검색 폼: 입력창 내부에 검색 버튼 포함 */}
+        <form className="search-form" onSubmit={handleSearch}>
+          <div className="search-input-container">
+            <input
+              type="text"
+              placeholder="레시피를 검색하세요"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button type="submit" className="search-btn">
+              <CiSearch size={24} />
+            </button>
+          </div>
+        </form>
+        {/* 결과 또는 인기 레시피 영역 */}
+        {query ? (
+          <div className="recipes-results">
+            {dummyRecipes
+              .filter((recipe) => {
+                if (searchOption === "음식명으로 검색") {
+                  return (
+                    recipe.title.toLowerCase().includes(query.toLowerCase()) &&
+                    (searchFilter === "전체" || recipe.category === searchFilter)
+                  );
+                } else if (searchOption === "재료로 검색") {
+                  const matchIngredient = recipe.ingredients
+                    .toLowerCase()
+                    .includes(query.toLowerCase());
+                  return (
+                    matchIngredient &&
+                    (searchFilter === "전체" || recipe.category === searchFilter)
+                  );
+                }
+                return (
+                  recipe.title.toLowerCase().includes(query.toLowerCase()) ||
+                  recipe.ingredients.toLowerCase().includes(query.toLowerCase())
+                );
+              })
+              .map((recipe) => (
+                <div
+                  key={recipe.id}
+                  className="recipe-card"
+                  onClick={() => navigate(`/recipe/${recipe.id}`)}
+                >
+                  <img src={recipe.image} alt={recipe.title} />
+                  <h3>{recipe.title}</h3>
+                </div>
+              ))}
+          </div>
+        ) : (
+          <>
+            <h2 className="popular-title">인기 레시피</h2>
+            <div className="popular-recipes">
+              {dummyRecipes.slice(0, 3).map((recipe) => (
+                <div
+                  key={recipe.id}
+                  className="recipe-card"
+                  onClick={() => navigate(`/recipe/${recipe.id}`)}
+                >
+                  <img src={recipe.image} alt={recipe.title} />
+                  <h3>{recipe.title}</h3>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -11,7 +11,7 @@ export default function FindEmail() {
 
   const handleFindEmail = async (e) => {
     e.preventDefault();
-    
+
     // 요청 데이터 구성
     const requestData = {
       username: name,
