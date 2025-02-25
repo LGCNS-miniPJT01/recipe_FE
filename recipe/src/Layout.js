@@ -34,7 +34,7 @@ export default function Layout() {
       <aside className="sidebar">
         <div className="sidebar-top-container">
           <div className="logo" onClick={() => navigate("/")}>
-            <img src="/images/logo-placeholder.png" alt="로고" className="logo-img" />
+            <img src="recipe_logo.png" alt="로고" className="logo-img" />
           </div>
           {user && user.role === "member" && !hideSidebarBottom && (
             <div className="sidebar-group-top">

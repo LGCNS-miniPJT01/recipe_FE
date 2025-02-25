@@ -14,11 +14,11 @@ const dummyRecipes = [
     calorie: "200kcal",
     ingredients: "두부, 국물, 소금",
     steps: [
-      { text: "두부를 깍둑썰기 합니다.", image: "https://via.placeholder.com/600x400?text=Step+1" },
-      { text: "국물 재료를 준비합니다.", image: "https://via.placeholder.com/600x400?text=Step+2" },
-      { text: "모든 재료를 넣고 끓입니다.", image: "https://via.placeholder.com/600x400?text=Step+3" }
+      { text: "두부를 깍둑썰기 합니다.", image: "https://img-cf.kurly.com/hdims/resize/%3E720x/quality/90/src/shop/data/goodsview/20240720/gv20000944450_1.jpg" },
+      { text: "국물 재료를 준비합니다.", image: "https://img-cf.kurly.com/hdims/resize/%3E720x/quality/90/src/shop/data/goodsview/20240720/gv20000944450_1.jpg" },
+      { text: "모든 재료를 넣고 끓입니다.", image: "https://img-cf.kurly.com/hdims/resize/%3E720x/quality/90/src/shop/data/goodsview/20240720/gv20000944450_1.jpg" }
     ],
-    image: "https://via.placeholder.com/600x400?text=두부+국",
+    image: "https://recipe1.ezmember.co.kr/cache/recipe/2016/07/02/cda9c3ad6198f4feddcfbfb0c28f2bc51.jpg",
     views: 123,
     likes: 10,
     owner: "hong@example.com"
@@ -185,6 +185,9 @@ export default function RecipeDetail() {
       </button>
       {recipe ? (
         <>
+        <div className="recipe-title-container">
+              <h1 className="recipe-title">{recipe.title}</h1>
+            </div>
           <div className="recipe-main">
             <div className="recipe-left">
               <img src={recipe.image} alt={recipe.title} className="recipe-image" />
@@ -201,6 +204,7 @@ export default function RecipeDetail() {
             <div className="recipe-center">
               <div className="recipe-header">
                 <h1 className="recipe-title">{recipe.title}</h1>
+                <div></div>
                 {user && user.email === recipe.owner ? (
                   <button className="report-delete-btn" onClick={openRecipeDeleteModal}>
                     삭제
@@ -215,16 +219,18 @@ export default function RecipeDetail() {
                 {Array.isArray(recipe.steps)
                   ? recipe.steps.map((step, index) => (
                     <div key={index} className="recipe-step">
+                      <div className="recipe-step-number">Step {index + 1}</div>
                       <p>{step.text}</p>
                       {step.image && (
                         <img src={step.image} alt={`Step ${index + 1}`} className="step-image" />
                       )}
                     </div>
                   ))
-                  : recipe.steps.split("\n").map((line, index) => (
+                : recipe.steps.split("\n").map((line, index) => (
                     <p key={index}>{line}</p>
                   ))}
-              </div>
+            </div>
+
             </div>
           </div>
           <div className="recipe-stats">
@@ -242,6 +248,18 @@ export default function RecipeDetail() {
             </span>
           </div>
           <div className="comments-section">
+          <div className="comments-list">
+              {comments.length > 0 ? (
+                comments.map((comment, index) => (
+                  <div key={index} className="comment-item">
+                    {comment}
+                  </div>
+                ))
+              ) : (
+                <p>댓글이 없습니다.</p>
+              )}
+              <div ref={commentsEndRef} />
+            </div>
             <form onSubmit={handleAddComment} className="comment-form">
               <div className="comment-header">
                 <span className="comment-title">댓글</span>
