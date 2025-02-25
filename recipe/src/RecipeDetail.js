@@ -22,6 +22,7 @@ export default function RecipeDetail() {
   const commentsEndRef = useRef(null);
 
   const [favoriteCount, setFavoriteCount] = useState(0);  // 좋아요 개수 상태 추가
+  const [likeMessage, setLikeMessage] = useState(""); // 좋아요 메시지 상태 추가
 
   const [showRecipeDeleteModal, setShowRecipeDeleteModal] = useState(false);
   const [showRecipeReportModal, setShowRecipeReportModal] = useState(false);
@@ -68,12 +69,29 @@ export default function RecipeDetail() {
   }, [recipe, viewCountIncremented]);
 
   const toggleLike = () => {
-    if (isLiked) {
-      setLikes((prev) => prev - 1);
-    } else {
-      setLikes((prev) => prev + 1);
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      navigate("/login", { state: { redirectBack: window.location.pathname } });
+      return;
     }
-    setIsLiked(!isLiked);
+
+    fetch(`http://localhost:8080/api/favorites/${id}?userId=6`, {
+      method: "POST",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "좋아요 추가 완료") {
+          setLikeMessage("레시피에 좋아요를 누르셨습니다.");
+          setFavoriteCount((prev) => prev + 1);  // 좋아요 개수 증가
+          setIsLiked(true);
+        } else if (data.message === "이미 좋아요한 레시피 입니다.") {
+          setLikeMessage("이미 좋아요한 레시피 입니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error adding favorite:", error);
+        setLikeMessage("이미 좋아요한 레시피 입니다.");
+      });
   };
 
   const toggleSave = () => {
@@ -227,6 +245,14 @@ export default function RecipeDetail() {
               <MdOutlineFileUpload size={20} />
             </span>
           </div>
+
+          {/* 좋아요 메시지 팝업 */}
+          {likeMessage && (
+            <div className="like-message-popup">
+              <p>{likeMessage}</p>
+            </div>
+          )}
+
           <div className="comments-section">
             <div className="comments-list">
               {comments.length > 0 ? (
