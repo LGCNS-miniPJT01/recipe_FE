@@ -149,7 +149,7 @@ export default function Main() {
 
   return (
     <div className="main-container">
-      <img src="home.png" alt="홈" className="home-img" />
+      <img src="home2.png" alt="홈" className="home-img" />
 
 
     <div className="main-container">
