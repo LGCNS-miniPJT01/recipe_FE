@@ -12,28 +12,28 @@ const dummyRecipes = [
     title: "두부 국",
     ingredients: "두부, 국물, 소금",
     category: "국",
-    image: "https://via.placeholder.com/300?text=두부+국"
+    image: "https://recipe1.ezmember.co.kr/cache/recipe/2016/07/02/cda9c3ad6198f4feddcfbfb0c28f2bc51.jpg"
   },
   {
     id: 2,
     title: "두부 찜",
     ingredients: "두부, 고추장, 설탕",
     category: "찜",
-    image: "https://via.placeholder.com/300?text=두부+찜"
+    image: "https://recipe1.ezmember.co.kr/cache/recipe/2016/07/02/cda9c3ad6198f4feddcfbfb0c28f2bc51.jpg"
   },
   {
     id: 3,
     title: "두부 반찬",
     ingredients: "두부, 간장, 마늘",
     category: "반찬",
-    image: "https://via.placeholder.com/300?text=두부+반찬"
+    image: "https://recipe1.ezmember.co.kr/cache/recipe/2016/07/02/cda9c3ad6198f4feddcfbfb0c28f2bc51.jpg"
   },
   {
     id: 4,
     title: "두부 메인 요리",
     ingredients: "두부, 야채, 고추",
     category: "메인 요리",
-    image: "https://via.placeholder.com/300?text=두부+메인+요리"
+    image: "https://recipe1.ezmember.co.kr/cache/recipe/2016/07/02/cda9c3ad6198f4feddcfbfb0c28f2bc51.jpg"
   }
 ];
 
@@ -51,8 +51,8 @@ function CustomSelect({ options, placeholder, value, onChange }) {
     setOpen(false);
   };
 
-  return (
-    <div className="custom-select-container" onClick={toggleOpen}>
+  return (  
+    <div className="custom-select-container" onClick={toggleOpen}>      
       <div className="custom-select-display">
         {value ? (
           <>
@@ -103,6 +103,7 @@ function CustomSelect({ options, placeholder, value, onChange }) {
         </div>
       )}
     </div>
+
   );
 }
 
@@ -147,6 +148,10 @@ export default function Main() {
   };
 
   return (
+    <div className="main-container">
+      <img src="home.png" alt="홈" className="home-img" />
+
+
     <div className="main-container">
       {/* 검색 옵션 및 필터 영역 */}
       <div className="search-filters">
@@ -237,6 +242,7 @@ export default function Main() {
           </div>
         </>
       )}
+    </div>
     </div>
   );
 }
