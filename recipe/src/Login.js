@@ -17,6 +17,18 @@ export default function Login() {
     setError("");
     setLoading(true);
 
+    if (email === "hong@test.com" && password === "hong123") {
+      setUser({ email: "hong@test.com", role: "member" });
+      navigate("/");
+      setLoading(false);
+      return;
+    } else if (email === "admin@test.com" && password === "admin123") {
+      setUser({ email: "admin@test.com", role: "admin" });
+      navigate("/");
+      setLoading(false);
+      return;
+    }
+
     try {
       // 백엔드 API에 로그인 요청
       const response = await fetch("http://localhost:8080/api/users/login", {

@@ -15,6 +15,7 @@ import Profile from "./Profile";
 import DeleteRecipe from "./DeleteRecipe";
 import ReportManagement from "./ReportManagement";
 import UserManagement from "./UserManagement";
+import NotificationPopup from "./NotificationPopup";
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,8 @@ const router = createBrowserRouter([
       { path: "/profile", element: <Profile /> },
       { path: "/deleteRecipe", element: <DeleteRecipe /> },
       { path: "/reportManagement", element: <ReportManagement /> },
-      { path: "/userManagement", element: <UserManagement /> }
+      { path: "/userManagement", element: <UserManagement /> },
+      { path: "/notification", element: <NotificationPopup /> }
     ]
   }
 ]);
