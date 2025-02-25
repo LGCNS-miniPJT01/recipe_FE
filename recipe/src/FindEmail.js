@@ -9,20 +9,36 @@ export default function FindEmail() {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
 
-  // 예제 사용자 데이터 (실제 구현 시 백엔드 연동 필요)
-  const users = [
-    { name: "홍길동", phone: "01012345678", email: "hong@example.com" }
-  ];
-
-  const handleFindEmail = (e) => {
+  const handleFindEmail = async (e) => {
     e.preventDefault();
-    const user = users.find(
-      (user) => user.name === name && user.phone === phone
-    );
-    if (user) {
-      setMessage(`${user.name}님의 이메일은 ${user.email}입니다`);
-    } else {
-      setMessage("잘못 입력했거나 등록되지 않은 계정입니다.");
+    
+    // 요청 데이터 구성
+    const requestData = {
+      username: name,
+      phone: phone
+    };
+
+    try {
+      // fetch로 POST 요청 보내기
+      const response = await fetch("http://localhost:8080/api/users/findemail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      // 서버 응답이 정상인지 확인
+      if (response.ok) {
+        const data = await response.text();
+        setMessage(`이메일은 ${data}입니다.`);
+      } else {
+        setMessage("잘못 입력했거나 등록되지 않은 계정입니다.");
+      }
+    } catch (error) {
+      // 에러 처리
+      console.log(error);
+      setMessage("서버와의 연결에 문제가 발생했습니다.");
     }
   };
 
