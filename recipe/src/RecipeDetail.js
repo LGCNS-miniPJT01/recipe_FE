@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
-import "./RecipeDetail.css";
 import { MdOutlineRemoveRedEye, MdOutlineFileUpload } from "react-icons/md";
 import { BiLike } from "react-icons/bi";
 import { FaRegStar } from "react-icons/fa";
+import "./RecipeDetail.css";
 
 export default function RecipeDetail() {
   const { id } = useParams();
@@ -12,7 +12,7 @@ export default function RecipeDetail() {
   const { user } = useContext(UserContext);
 
   const [recipe, setRecipe] = useState(null);
-  const [views, setViews] = useState(0);
+  const [views, setViews] = useState(0);  // 조회수 상태
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -20,6 +20,8 @@ export default function RecipeDetail() {
   const [newComment, setNewComment] = useState("");
   const [viewCountIncremented, setViewCountIncremented] = useState(false);
   const commentsEndRef = useRef(null);
+
+  const [favoriteCount, setFavoriteCount] = useState(0);  // 좋아요 개수 상태 추가
 
   const [showRecipeDeleteModal, setShowRecipeDeleteModal] = useState(false);
   const [showRecipeReportModal, setShowRecipeReportModal] = useState(false);
@@ -37,17 +39,31 @@ export default function RecipeDetail() {
       .then((response) => response.json())
       .then((data) => {
         setRecipe(data);
-        setViews(data.views);
         setLikes(data.likes);
       })
       .catch((error) => console.error("Error fetching recipe data:", error));
+
+    // 좋아요 개수 가져오기 API 호출
+    fetch(`http://localhost:8080/api/favorites/count/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setFavoriteCount(data.count);  // count 값을 favoriteCount 상태에 저장
+      })
+      .catch((error) => console.error("Error fetching favorite count:", error));
+
+    // 조회수 가져오기 API 호출
+    fetch(`http://localhost:8080/api/recipes/${id}/views`)
+      .then((response) => response.json())
+      .then((data) => {
+        setViews(data);  // 조회수 상태에 값 저장
+      })
+      .catch((error) => console.error("Error fetching view count:", error));
   }, [id]);
 
   useEffect(() => {
     if (recipe && !viewCountIncremented) {
-      setViews((prev) => prev + 1);
+      setViews((prev) => prev + 1);  // 레시피 로드 후 조회수 1 증가
       setViewCountIncremented(true);
-      // 백엔드 조회수 증가 API 호출
     }
   }, [recipe, viewCountIncremented]);
 
@@ -199,10 +215,10 @@ export default function RecipeDetail() {
           </div>
           <div className="recipe-stats">
             <span className="stat-btn">
-              <MdOutlineRemoveRedEye size={20} /> {views}
+              <MdOutlineRemoveRedEye size={20} /> {views} {/* 조회수 표시 */}
             </span>
             <span onClick={toggleLike} className={`stat-btn ${isLiked ? "active" : ""}`}>
-              <BiLike size={20} /> {likes}
+              <BiLike size={20} /> {favoriteCount} {/* 좋아요 개수 표시 */}
             </span>
             <span onClick={toggleSave} className={`stat-btn ${isSaved ? "active" : ""}`}>
               <FaRegStar size={20} />
@@ -256,7 +272,8 @@ export default function RecipeDetail() {
           </div>
         </>
       ) : (
-        <>
-          <p className="error-message">해당 레시피를 찾을 수 없습니다.</p>
-          </>
-      )}</div>)}
+        <p className="error-message">해당 레시피를 찾을 수 없습니다.</p>
+      )}
+    </div>
+  );
+}
