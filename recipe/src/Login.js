@@ -36,11 +36,11 @@ export default function Login() {
         localStorage.setItem("jwt", token);
 
         // JWT 토큰을 디코딩하여 유저 정보를 추출 (예시: 이메일과 역할)
-        const decodedToken = JSON.parse(atob(token.split('.')[1])); // JWT 디코딩
-        const { email: userEmail, role } = decodedToken;
+        // const decodedToken = JSON.parse(atob(token.split('.')[1])); // JWT 디코딩
+        // const { email: userEmail, role } = decodedToken;
 
         // 유저 정보 저장
-        setUser({ email: userEmail, role });
+        setUser({ email, role: "member" });
 
         // 홈 화면으로 이동
         navigate("/");

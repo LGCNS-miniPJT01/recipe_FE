@@ -12,28 +12,28 @@ const dummyRecipes = [
     title: "두부 국",
     ingredients: "두부, 국물, 소금",
     category: "국",
-    //image: "https://via.placeholder.com/300?text=두부+국"
+    image: "https://via.placeholder.com/300?text=두부+국"
   },
   {
     id: 2,
     title: "두부 찜",
     ingredients: "두부, 고추장, 설탕",
     category: "찜",
-    //image: "https://via.placeholder.com/300?text=두부+찜"
+    image: "https://via.placeholder.com/300?text=두부+찜"
   },
   {
     id: 3,
     title: "두부 반찬",
     ingredients: "두부, 간장, 마늘",
     category: "반찬",
-    //image: "https://via.placeholder.com/300?text=두부+반찬"
+    image: "https://via.placeholder.com/300?text=두부+반찬"
   },
   {
     id: 4,
     title: "두부 메인 요리",
     ingredients: "두부, 야채, 고추",
     category: "메인 요리",
-    //image: "https://via.placeholder.com/300?text=두부+메인+요리"
+    image: "https://via.placeholder.com/300?text=두부+메인+요리"
   }
 ];
 
