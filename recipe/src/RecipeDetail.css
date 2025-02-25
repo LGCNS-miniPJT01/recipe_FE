@@ -55,16 +55,37 @@
   gap: 10px;
 }
 
+/* 레시피 제목과 신고/삭제 버튼을 한 줄에 배치 */
+.recipe-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .recipe-title {
   font-size: 28px;
   margin-bottom: 10px;
-  text-align: center;
+  text-align: left;
 }
 
-.recipe-steps pre {
+.report-delete-btn {
+  padding: 6px 10px;
+  font-size: 14px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.report-delete-btn:hover {
+  background-color: #c82333;
+}
+
+.recipe-steps p {
   font-size: 16px;
   line-height: 1.6;
-  white-space: pre-wrap;
 }
 
 /* 통계 영역: 조회수, 좋아요, 저장, 공유 버튼 */
@@ -113,14 +134,13 @@
   margin-bottom: 15px;
 }
 
-/* 헤더: '댓글' 텍스트와 등록 버튼을 한 줄에 배치 */
+/* 댓글 헤더: '댓글' 텍스트와 등록 버튼을 한 줄에 배치 */
 .comment-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* '댓글' 제목 스타일 */
 .comment-title {
   flex: 1;
   font-size: 18px;
@@ -138,6 +158,7 @@
   resize: vertical;
 }
 
+/* 댓글 등록 버튼 */
 .comment-btn {
   padding: 5px 8px;
   font-size: 12px;
@@ -147,13 +168,103 @@
   transition: color 0.3s ease;
 }
 
+/* 댓글 항목 */
 .comments-list {
   border-top: 1px solid #ddd;
   padding-top: 15px;
 }
 
 .comment-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 8px 0;
   border-bottom: 1px solid #eee;
   font-size: 16px;
+}
+
+.comment-action-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.comment-action-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 모달 관련 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 500px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-actions button:first-child {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.modal-actions button:first-child:hover {
+  background-color: #0056b3;
+}
+
+.modal-actions button:last-child {
+  background-color: #ccc;
+  color: #333;
+}
+
+.modal-actions button:last-child:hover {
+  background-color: #bbb;
 }
