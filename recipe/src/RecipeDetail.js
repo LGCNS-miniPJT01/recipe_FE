@@ -59,7 +59,17 @@ export default function RecipeDetail() {
         setViews(data);  // 조회수 상태에 값 저장
       })
       .catch((error) => console.error("Error fetching view count:", error));
+
+      fetch(`http://localhost:8080/api/comments/recipe/${id}`)
+      .then((response) => response.json())
+      .then((data) => setComments(data))
+      .catch((error) => console.error("Error fetching comments:", error));
   }, [id]);
+
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  };
 
   useEffect(() => {
     if (recipe && !viewCountIncremented) {
@@ -255,7 +265,9 @@ export default function RecipeDetail() {
 
           <div className="comments-section">
             <div className="comments-list">
-              {comments.length > 0 ? (
+              {comments.length === 0 ? (
+                <p>댓글이 없습니다.</p>
+              ) : (
                 comments.map((comment, index) => (
                   <div key={index} className="comment-item">
                     <span>{comment.text}</span>
@@ -276,17 +288,14 @@ export default function RecipeDetail() {
                     )}
                   </div>
                 ))
-              ) : (
-                <p>댓글이 없습니다.</p>
               )}
               <div ref={commentsEndRef} />
             </div>
+            
             <form onSubmit={handleAddComment} className="comment-form">
               <div className="comment-header">
                 <span className="comment-title">댓글</span>
-                <button type="submit" className="comment-btn">
-                  등록
-                </button>
+                <button type="submit" className="comment-btn">등록</button>
               </div>
               <textarea
                 placeholder="댓글을 입력하세요"
@@ -296,6 +305,7 @@ export default function RecipeDetail() {
               ></textarea>
             </form>
           </div>
+
         </>
       ) : (
         <p className="error-message">해당 레시피를 찾을 수 없습니다.</p>
