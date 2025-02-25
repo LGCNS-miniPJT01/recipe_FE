@@ -1,102 +1,143 @@
+/* 전체 프로필 컨테이너 */
 .profile-container {
-    display: flex;
-    max-width: 1200px;
-    margin: 50px auto;
-    padding: 20px;
-    gap: 40px;
-  }
-  
-  /* 왼쪽 사이드바: 프로필 사진과 정보 */
-  .profile-sidebar {
-    flex: 0 0 300px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .profile-pic {
-    width: 100%;
-    max-width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: 0 auto 20px auto;
-    display: block;
-  }
-  
-  .profile-info p {
-    font-size: 16px;
-    margin: 8px 0;
-    text-align: left;
-  }
-  
-  .edit-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    width: 100%;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .edit-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  /* 오른쪽 메인 영역: 스크랩 및 등록 레시피 */
-  .profile-main {
-    flex: 1;
-    display: flex;
+  display: flex;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 20px;
+  gap: 40px;
+}
+
+/* 왼쪽 사이드바: 프로필 사진과 정보 */
+.profile-sidebar {
+  flex: 0 0 300px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.profile-pic {
+  width: 100%;
+  max-width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 20px;
+  display: block;
+}
+
+/* 프로필 정보 가운데 정렬 */
+.profile-info p {
+  font-size: 16px;
+  margin: 8px 0;
+  text-align: center;
+}
+
+.edit-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  width: 100%;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 오른쪽 메인 영역: 레시피 섹션들은 세로로 쌓임 */
+.profile-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* 레시피 섹션 */
+.recipes-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recipes-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* 레시피 카드 그리드: 각 목록을 가로로 표시 */
+.recipes-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  /* 한 줄로 표시 */
+  gap: 20px;
+  overflow-x: auto;
+  /* 넘치는 경우 스크롤 */
+  padding-bottom: 10px;
+}
+
+.recipe-card {
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.recipe-card:hover {
+  transform: scale(1.02);
+}
+
+.recipe-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.recipe-card h3 {
+  padding: 10px;
+  text-align: center;
+  font-size: 18px;
+}
+
+/* 반응형: 작은 화면에서는 전체 레이아웃을 세로로 정렬 */
+@media (max-width: 768px) {
+  .profile-container {
     flex-direction: column;
-    gap: 40px;
-  }
-  
-  .recipes-section {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .recipes-section h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-  }
-  
-  .recipes-grid {
-    display: flex;
-    flex-wrap: wrap;
     gap: 20px;
-    justify-content: center;
   }
-  
-  .recipe-card {
-    width: 300px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-  }
-  
-  .recipe-card:hover {
-    transform: scale(1.02);
-  }
-  
-  .recipe-card img {
+
+  .profile-sidebar {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    max-width: 400px;
+    margin: 0 auto;
   }
-  
-  .recipe-card h3 {
-    padding: 10px;
-    text-align: center;
-    font-size: 18px;
-  }  
+
+  /* 기존 스타일은 그대로 유지하고, 아래 수정 관련 스타일만 추가 */
+
+  .inline-input {
+    font-size: 16px;
+    padding: 3px 5px;
+    margin-left: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .edit-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    padding: 0;
+  }
+}

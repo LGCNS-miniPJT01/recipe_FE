@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ResetPw.css";
+import FormGroup from "./FormGroup";
 
 const ResetPw = () => {
   const [password, setPassword] = useState("");
@@ -25,26 +26,24 @@ const ResetPw = () => {
     <div className="reset-container">
       <h2>비밀번호를 재설정하세요</h2>
       <form onSubmit={handleSubmit} className="resetpw-form">
-        <div className="form-group">
-          <label>비밀번호</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호를 입력하세요"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>비밀번호 확인</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="비밀번호를 한 번 더 입력하세요"
-            required
-          />
-        </div>
+        <FormGroup
+          label="비밀번호"
+          name="password"
+          type="password"
+          placeholder="비밀번호를 입력하세요"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <FormGroup
+          label="비밀번호 확인"
+          name="confirmPassword"
+          type="password"
+          placeholder="비밀번호를 한 번 더 입력하세요"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
         <button type="submit">확인</button>
       </form>
       <p onClick={() => navigate("/login")} className="back-to-login">

@@ -12,11 +12,14 @@ import RecipeDetail from "./RecipeDetail";
 import AddRecipe from "./AddRecipe";
 import ScrapedRecipe from "./ScrapedRecipe";
 import Profile from "./Profile";
+import DeleteRecipe from "./DeleteRecipe";
+import ReportManagement from "./ReportManagement";
+import UserManagement from "./UserManagement";
 
 const router = createBrowserRouter([
   {
-    path: "/", 
-    element: <Layout />, 
+    path: "/",
+    element: <Layout />,
     children: [
       { path: "/", element: <Main /> },
       { path: "/login", element: <Login /> },
@@ -27,7 +30,10 @@ const router = createBrowserRouter([
       { path: "/recipe/:id", element: <RecipeDetail /> },
       { path: "/addRecipe", element: <AddRecipe /> },
       { path: "/scrapedRecipe", element: <ScrapedRecipe /> },
-      { path: "/profile", element: <Profile /> }
+      { path: "/profile", element: <Profile /> },
+      { path: "/deleteRecipe", element: <DeleteRecipe /> },
+      { path: "/reportManagement", element: <ReportManagement /> },
+      { path: "/userManagement", element: <UserManagement /> }
     ]
   }
 ]);
