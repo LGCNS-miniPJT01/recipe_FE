@@ -5,7 +5,7 @@ import { LuBeef } from "react-icons/lu";
 import { CiSearch } from "react-icons/ci";
 import "./Main.css";
 
-// 기존 dummyRecipes 그대로 사용
+// 더미 데이터
 const dummyRecipes = [
   {
     id: 1,
@@ -37,7 +37,7 @@ const dummyRecipes = [
   }
 ];
 
-// 커스텀 셀렉트 컴포넌트 (검색 옵션용)
+// CustomSelect 컴포넌트 (재사용 가능)
 function CustomSelect({ options, placeholder, value, onChange }) {
   const [open, setOpen] = useState(false);
 
@@ -56,9 +56,9 @@ function CustomSelect({ options, placeholder, value, onChange }) {
       <div className="custom-select-display">
         {value ? (
           <>
-            {value === "음식명으로 검색" ? (
+            {placeholder === "검색 옵션을 선택하세요" && value === "음식명으로 검색" ? (
               <PiBowlFood size={18} className="option-icon" />
-            ) : value === "재료로 검색" ? (
+            ) : placeholder === "검색 옵션을 선택하세요" && value === "재료로 검색" ? (
               <LuBeef size={18} className="option-icon" />
             ) : null}
             <span>{value}</span>
@@ -69,6 +69,20 @@ function CustomSelect({ options, placeholder, value, onChange }) {
       </div>
       {open && (
         <div className="custom-select-dropdown">
+          {/* "전체 검색" 혹은 "전체" 항목을 포함 */}
+          <div
+            className="custom-select-option"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSelect(placeholder.includes("검색 옵션") ? "전체 검색" : "전체");
+            }}
+          >
+            {placeholder.includes("검색 옵션") ? (
+              <span>전체 검색</span>
+            ) : (
+              <span>전체</span>
+            )}
+          </div>
           {options.map((option, idx) => (
             <div
               key={idx}
@@ -78,9 +92,9 @@ function CustomSelect({ options, placeholder, value, onChange }) {
                 handleSelect(option);
               }}
             >
-              {option === "음식명으로 검색" ? (
+              {placeholder.includes("검색 옵션") && option === "음식명으로 검색" ? (
                 <PiBowlFood size={18} className="option-icon" />
-              ) : option === "재료로 검색" ? (
+              ) : placeholder.includes("검색 옵션") && option === "재료로 검색" ? (
                 <LuBeef size={18} className="option-icon" />
               ) : null}
               <span>{option}</span>
@@ -96,12 +110,15 @@ export default function Main() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
-  // 검색 옵션 상태: 초기값은 빈 문자열("전체 검색"으로 처리)
-  const [searchOption, setSearchOption] = useState("");
-  // 검색 필터 상태
-  const [searchFilter, setSearchFilter] = useState("");
+  // 검색 옵션: 빈 문자열 대신 "전체 검색"으로 초기값
+  const [searchOption, setSearchOption] = useState("전체 검색");
+  // 검색 필터: 초기값 "전체"
+  const [searchFilter, setSearchFilter] = useState("전체");
 
-  const filterOptions = ["찜", "조림", "볶음", "구이", "탕"];
+  // 검색 옵션 선택 시, 옵션 "전체 검색", "음식명으로 검색", "재료로 검색" 제공
+  const searchOptionOptions = ["음식명으로 검색", "재료로 검색"];
+  // 검색 필터 옵션: "전체", "찜", "조림", "볶음", "구이", "탕"
+  const filterOptions = ["전체", "찜", "조림", "볶음", "구이", "탕"];
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -110,24 +127,23 @@ export default function Main() {
       results = dummyRecipes;
     } else if (searchOption === "음식명으로 검색") {
       results = dummyRecipes.filter((recipe) =>
-        recipe.title.toLowerCase().includes(query.toLowerCase())
+        recipe.title.toLowerCase().includes(query.toLowerCase()) &&
+        (searchFilter === "전체" || recipe.category === searchFilter)
       );
     } else if (searchOption === "재료로 검색") {
       results = dummyRecipes.filter((recipe) => {
         const matchIngredient = recipe.ingredients.toLowerCase().includes(query.toLowerCase());
-        if (searchFilter) {
-          return matchIngredient && recipe.category === searchFilter;
-        }
-        return matchIngredient;
+        return matchIngredient && (searchFilter === "전체" || recipe.category === searchFilter);
       });
     } else {
-      // 전체 검색: 옵션 미선택 시
+      // 전체 검색: 옵션이 "전체 검색"일 때
       results = dummyRecipes.filter((recipe) =>
         recipe.title.toLowerCase().includes(query.toLowerCase()) ||
         recipe.ingredients.toLowerCase().includes(query.toLowerCase())
       );
     }
     console.log("검색 결과:", results);
+    // 실제 구현 시 결과를 렌더링하거나 결과 페이지로 이동
   };
 
   return (
@@ -136,26 +152,23 @@ export default function Main() {
       <div className="search-filters">
         <div className="filter-group">
           <CustomSelect
-            options={["음식명으로 검색", "재료로 검색"]}
+            options={searchOptionOptions}
             placeholder="검색 옵션을 선택하세요"
-            value={searchOption}
-            onChange={setSearchOption}
+            value={searchOption === "전체 검색" ? "" : searchOption}
+            onChange={(option) =>
+              setSearchOption(option === "" ? "전체 검색" : option)
+            }
           />
         </div>
         <div className="filter-group">
-          <select
-            value={searchFilter}
-            onChange={(e) => setSearchFilter(e.target.value)}
-            disabled={searchOption !== "재료로 검색"}
-          >
-            <option value="">검색 필터를 선택하세요</option>
-            {searchOption === "재료로 검색" &&
-              filterOptions.map((opt, idx) => (
-                <option key={idx} value={opt}>
-                  {opt}
-                </option>
-              ))}
-          </select>
+          <CustomSelect
+            options={filterOptions.slice(1)} // "전체" 제외하고 나머지 옵션
+            placeholder="검색 필터를 선택하세요"
+            value={searchFilter === "전체" ? "" : searchFilter}
+            onChange={(option) =>
+              setSearchFilter(option === "" ? "전체" : option)
+            }
+          />
         </div>
       </div>
       {/* 검색 폼: 입력창 내부에 검색 버튼 포함 */}
@@ -178,13 +191,18 @@ export default function Main() {
           {dummyRecipes
             .filter((recipe) => {
               if (searchOption === "음식명으로 검색") {
-                return recipe.title.toLowerCase().includes(query.toLowerCase());
+                return (
+                  recipe.title.toLowerCase().includes(query.toLowerCase()) &&
+                  (searchFilter === "전체" || recipe.category === searchFilter)
+                );
               } else if (searchOption === "재료로 검색") {
-                const matchIngredient = recipe.ingredients.toLowerCase().includes(query.toLowerCase());
-                if (searchFilter) {
-                  return matchIngredient && recipe.category === searchFilter;
-                }
-                return matchIngredient;
+                const matchIngredient = recipe.ingredients
+                  .toLowerCase()
+                  .includes(query.toLowerCase());
+                return (
+                  matchIngredient &&
+                  (searchFilter === "전체" || recipe.category === searchFilter)
+                );
               }
               return (
                 recipe.title.toLowerCase().includes(query.toLowerCase()) ||
