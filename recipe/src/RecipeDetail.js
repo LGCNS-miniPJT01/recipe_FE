@@ -6,7 +6,7 @@ import { MdOutlineRemoveRedEye, MdOutlineFileUpload } from "react-icons/md";
 import { BiLike } from "react-icons/bi";
 import { FaRegStar } from "react-icons/fa";
 
-// 더미 데이터 (실제 구현 시 API 연동 예정)
+// 더미 데이터 (owner 속성 추가)
 const dummyRecipes = [
   {
     id: "1",
@@ -19,7 +19,8 @@ const dummyRecipes = [
     ],
     image: "https://via.placeholder.com/600x400?text=두부+국",
     views: 123,
-    likes: 10
+    likes: 10,
+    owner: "hong@example.com"
   },
   {
     id: "2",
@@ -32,7 +33,8 @@ const dummyRecipes = [
     ],
     image: "https://via.placeholder.com/600x400?text=두부+찜",
     views: 45,
-    likes: 5
+    likes: 5,
+    owner: "other@example.com"
   }
 ];
 
@@ -47,21 +49,31 @@ export default function RecipeDetail() {
   const [likes, setLikes] = useState(recipe ? recipe.likes : 0);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  // 댓글을 객체 배열로: { text, author }
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
-  // 플래그: 조회수를 한 번만 증가시키기 위해 사용
+  // 플래그: 조회수 한 번 증가
   const [viewCountIncremented, setViewCountIncremented] = useState(false);
-
-  // 댓글 추가 후 자동 스크롤을 위한 ref
   const commentsEndRef = useRef(null);
 
-  // 페이지 로드시 recipe가 로드되면 한 번만 조회수 증가
+  // 모달 관련 state
+  const [showRecipeDeleteModal, setShowRecipeDeleteModal] = useState(false);
+  const [showRecipeReportModal, setShowRecipeReportModal] = useState(false);
+  const [recipeReportTitle, setRecipeReportTitle] = useState("");
+  const [recipeReportReason, setRecipeReportReason] = useState("");
+
+  const [showCommentDeleteModal, setShowCommentDeleteModal] = useState(false);
+  const [commentToDeleteIndex, setCommentToDeleteIndex] = useState(null);
+  const [showCommentReportModal, setShowCommentReportModal] = useState(false);
+  const [commentReportText, setCommentReportText] = useState("");
+  const [commentReportIndex, setCommentReportIndex] = useState(null);
+
   useEffect(() => {
     if (recipe && !viewCountIncremented) {
       setViews((prev) => prev + 1);
       setViewCountIncremented(true);
-      // 실제 구현 시 백엔드 조회수 증가 API 호출
+      // 백엔드 조회수 증가 API 호출
     }
   }, [recipe, viewCountIncremented]);
 
@@ -72,7 +84,6 @@ export default function RecipeDetail() {
       setLikes((prev) => prev + 1);
     }
     setIsLiked(!isLiked);
-    // 실제 구현 시 백엔드에 좋아요 업데이트 API 호출
   };
 
   const toggleSave = () => {
@@ -82,7 +93,6 @@ export default function RecipeDetail() {
       return;
     }
     setIsSaved(!isSaved);
-    // 실제 구현 시 백엔드에 저장 상태 업데이트 API 호출
   };
 
   const handleShare = () => {
@@ -92,6 +102,64 @@ export default function RecipeDetail() {
       .catch(() => alert("URL 복사에 실패했습니다."));
   };
 
+  // 레시피 삭제: 모달 열기
+  const openRecipeDeleteModal = () => {
+    setShowRecipeDeleteModal(true);
+  };
+
+  const handleRecipeDeleteConfirm = () => {
+    setShowRecipeDeleteModal(false);
+    alert("삭제되었습니다.");
+    // 실제 삭제 API 호출 후 navigate
+    navigate(-1);
+  };
+
+  // 레시피 신고: 모달 열기
+  const openRecipeReportModal = () => {
+    setShowRecipeReportModal(true);
+  };
+
+  const handleRecipeReportSubmit = () => {
+    if (!recipeReportTitle || !recipeReportReason) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+    setShowRecipeReportModal(false);
+    alert("신고가 완료되었습니다.");
+    // 실제 신고 API 호출
+    setRecipeReportTitle("");
+    setRecipeReportReason("");
+  };
+
+  // 댓글 삭제: 모달 열기
+  const openCommentDeleteModal = (index) => {
+    setCommentToDeleteIndex(index);
+    setShowCommentDeleteModal(true);
+  };
+
+  const handleCommentDeleteConfirm = () => {
+    setComments(comments.filter((_, idx) => idx !== commentToDeleteIndex));
+    setShowCommentDeleteModal(false);
+    alert("삭제되었습니다.");
+  };
+
+  // 댓글 신고: 모달 열기
+  const openCommentReportModal = (index) => {
+    setCommentReportIndex(index);
+    setShowCommentReportModal(true);
+  };
+
+  const handleCommentReportSubmit = () => {
+    if (!commentReportText) {
+      alert("신고 내용을 입력해주세요.");
+      return;
+    }
+    setShowCommentReportModal(false);
+    alert("신고가 완료되었습니다.");
+    setCommentReportText("");
+  };
+
+  // 댓글 추가
   const handleAddComment = (e) => {
     e.preventDefault();
     if (!user) {
@@ -100,13 +168,12 @@ export default function RecipeDetail() {
       return;
     }
     if (newComment.trim()) {
-      setComments([...comments, newComment.trim()]);
+      const commentObj = { text: newComment.trim(), author: user.email };
+      setComments([...comments, commentObj]);
       setNewComment("");
-      // 댓글 추가 후, 댓글 목록 끝으로 스크롤 이동
       setTimeout(() => {
         commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
-      // 실제 구현 시 백엔드에 댓글 추가 API 호출
     }
   };
 
@@ -119,29 +186,32 @@ export default function RecipeDetail() {
         <>
           <div className="recipe-main">
             <div className="recipe-left">
-              <img
-                src={recipe.image}
-                alt={recipe.title}
-                className="recipe-image"
-              />
+              <img src={recipe.image} alt={recipe.title} className="recipe-image" />
               <div className="recipe-ingredients">
                 <h2>재료</h2>
                 <p>{recipe.ingredients}</p>
               </div>
             </div>
             <div className="recipe-center">
-              <h1 className="recipe-title">{recipe.title}</h1>
+              <div className="recipe-header">
+                <h1 className="recipe-title">{recipe.title}</h1>
+                {user && user.email === recipe.owner ? (
+                  <button className="report-delete-btn" onClick={openRecipeDeleteModal}>
+                    삭제
+                  </button>
+                ) : (
+                  <button className="report-delete-btn" onClick={openRecipeReportModal}>
+                    신고
+                  </button>
+                )}
+              </div>
               <div className="recipe-steps">
                 {Array.isArray(recipe.steps)
                   ? recipe.steps.map((step, index) => (
                     <div key={index} className="recipe-step">
                       <p>{step.text}</p>
                       {step.image && (
-                        <img
-                          src={step.image}
-                          alt={`Step ${index + 1}`}
-                          className="step-image"
-                        />
+                        <img src={step.image} alt={`Step ${index + 1}`} className="step-image" />
                       )}
                     </div>
                   ))
@@ -155,16 +225,10 @@ export default function RecipeDetail() {
             <span className="stat-btn">
               <MdOutlineRemoveRedEye size={20} /> {views}
             </span>
-            <span
-              onClick={toggleLike}
-              className={`stat-btn ${isLiked ? "active" : ""}`}
-            >
+            <span onClick={toggleLike} className={`stat-btn ${isLiked ? "active" : ""}`}>
               <BiLike size={20} /> {likes}
             </span>
-            <span
-              onClick={toggleSave}
-              className={`stat-btn ${isSaved ? "active" : ""}`}
-            >
+            <span onClick={toggleSave} className={`stat-btn ${isSaved ? "active" : ""}`}>
               <FaRegStar size={20} />
             </span>
             <span onClick={handleShare} className="stat-btn">
@@ -190,7 +254,16 @@ export default function RecipeDetail() {
               {comments.length > 0 ? (
                 comments.map((comment, index) => (
                   <div key={index} className="comment-item">
-                    {comment}
+                    <span>{comment.text}</span>
+                    {user && comment.author === user.email ? (
+                      <button className="comment-action-btn" onClick={() => openCommentDeleteModal(index)}>
+                        삭제
+                      </button>
+                    ) : (
+                      <button className="comment-action-btn" onClick={() => openCommentReportModal(index)}>
+                        신고
+                      </button>
+                    )}
                   </div>
                 ))
               ) : (
@@ -207,6 +280,74 @@ export default function RecipeDetail() {
             뒤로가기
           </button>
         </>
+      )}
+
+      {/* 레시피 삭제 모달 */}
+      {showRecipeDeleteModal && (
+        <div className="modal-overlay" onClick={() => setShowRecipeDeleteModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>정말 삭제하시겠습니까?</h3>
+            <div className="modal-actions">
+              <button onClick={handleRecipeDeleteConfirm}>예</button>
+              <button onClick={() => setShowRecipeDeleteModal(false)}>아니오</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 레시피 신고 모달 */}
+      {showRecipeReportModal && (
+        <div className="modal-overlay" onClick={() => setShowRecipeReportModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>신고하기</h3>
+            <input
+              type="text"
+              placeholder="신고 제목"
+              value={recipeReportTitle}
+              onChange={(e) => setRecipeReportTitle(e.target.value)}
+            />
+            <textarea
+              placeholder="신고 이유"
+              value={recipeReportReason}
+              onChange={(e) => setRecipeReportReason(e.target.value)}
+            ></textarea>
+            <div className="modal-actions">
+              <button onClick={handleRecipeReportSubmit}>신고하기</button>
+              <button onClick={() => setShowRecipeReportModal(false)}>취소</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 댓글 삭제 모달 */}
+      {showCommentDeleteModal && (
+        <div className="modal-overlay" onClick={() => setShowCommentDeleteModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>정말 삭제하시겠습니까?</h3>
+            <div className="modal-actions">
+              <button onClick={handleCommentDeleteConfirm}>예</button>
+              <button onClick={() => setShowCommentDeleteModal(false)}>아니오</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 댓글 신고 모달 */}
+      {showCommentReportModal && (
+        <div className="modal-overlay" onClick={() => setShowCommentReportModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>댓글 신고</h3>
+            <textarea
+              placeholder="신고 내용을 입력하세요"
+              value={commentReportText}
+              onChange={(e) => setCommentReportText(e.target.value)}
+            ></textarea>
+            <div className="modal-actions">
+              <button onClick={handleCommentReportSubmit}>신고하기</button>
+              <button onClick={() => setShowCommentReportModal(false)}>취소</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
