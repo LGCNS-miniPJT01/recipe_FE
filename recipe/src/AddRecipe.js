@@ -222,18 +222,6 @@ export default function AddRecipe() {
           />
         </div>
 
-        {/* 카테고리 입력 */}
-        <div className="form-group">
-          <label>카테고리</label>
-          <input
-            type="text"
-            placeholder="음식 종류를 입력하세요(찜, 조림, 볶음, 구이, 탕 등)"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-          />
-        </div>
-
         {/* 해시태그 입력 */}
         <div className="form-group">
           <label>해시태그</label>
