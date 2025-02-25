@@ -11,6 +11,7 @@ const dummyRecipes = [
   {
     id: "1",
     title: "두부 국",
+    calorie: "200kcal",
     ingredients: "두부, 국물, 소금",
     steps: [
       { text: "두부를 깍둑썰기 합니다.", image: "https://via.placeholder.com/600x400?text=Step+1" },
@@ -25,6 +26,7 @@ const dummyRecipes = [
   {
     id: "2",
     title: "두부 찜",
+    calorie: "150kcal",
     ingredients: "두부, 고추장, 설탕, 참기름",
     steps: [
       { text: "두부를 준비합니다.", image: "https://via.placeholder.com/600x400?text=Step+1" },
@@ -49,7 +51,6 @@ export default function RecipeDetail() {
   const [likes, setLikes] = useState(recipe ? recipe.likes : 0);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  // 댓글을 객체 배열로: { text, author }
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
@@ -187,6 +188,11 @@ export default function RecipeDetail() {
           <div className="recipe-main">
             <div className="recipe-left">
               <img src={recipe.image} alt={recipe.title} className="recipe-image" />
+              {recipe.calorie && (
+                <div className="recipe-calorie">
+                  열량: {recipe.calorie}
+                </div>
+              )}
               <div className="recipe-ingredients">
                 <h2>재료</h2>
                 <p>{recipe.ingredients}</p>

@@ -23,7 +23,7 @@
   margin-bottom: 20px;
 }
 
-/* 왼쪽 영역: 사진과 재료 */
+/* 왼쪽 영역: 사진, 열량량 재료 */
 .recipe-left {
   width: 300px;
   display: flex;
@@ -35,6 +35,14 @@
   width: 100%;
   height: auto;
   border-radius: 8px;
+}
+
+.recipe-calorie {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+  margin: 10px 0;
 }
 
 .recipe-ingredients h2 {
