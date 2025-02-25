@@ -1,3 +1,4 @@
+/* 회원가입 컨테이너 */
 .signup-container {
   width: 100%;
   max-width: 400px;
@@ -8,16 +9,19 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* 회원가입 제목 */
 .signup-container h2 {
   text-align: center;
   margin-bottom: 20px;
   font-size: 24px;
+  color: #ff7f00; /* 주황색 */
 }
 
+/* 회원가입 버튼 */
 .signup-container button {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
+  background-color: #ff7f00; /* 주황색 */
   border: none;
   border-radius: 4px;
   color: #fff;
@@ -26,10 +30,12 @@
   transition: background-color 0.3s ease;
 }
 
+/* 버튼 hover 상태 */
 .signup-container button:hover {
-  background-color: #0056b3;
+  background-color: #e56b00; /* 어두운 주황색 */
 }
 
+/* 오류 메시지 */
 .error-message {
   color: red;
   text-align: center;
@@ -37,9 +43,10 @@
   font-size: 14px;
 }
 
+/* 로그인 화면으로 돌아가기 링크 */
 .back-to-login {
   cursor: pointer;
-  color: blue;
+  color: #ff7f00; /* 주황색 */
   margin-top: 15px;
   text-decoration: underline;
   font-size: 14px;

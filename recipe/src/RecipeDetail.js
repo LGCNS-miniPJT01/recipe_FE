@@ -198,6 +198,7 @@ export default function RecipeDetail() {
             <div className="recipe-center">
               <div className="recipe-header">
                 <h1 className="recipe-title">{recipe.title}</h1>
+                <div></div>
                 {user && user.email === recipe.owner ? (
                   <button className="report-delete-btn" onClick={openRecipeDeleteModal}>
                     삭제

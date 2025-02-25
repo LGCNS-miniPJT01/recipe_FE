@@ -78,6 +78,8 @@
   background-color: #ff7f00;
   padding: 30px 20px; /* 위, 아래 여백 30px, 좌우 여백 20px */
   text-align: left;
+  margin: 20px 0px; /* 모든 방향에 20px 마진 */
+  border-radius: 10px; /* 모서리 둥글게 */
 }
 
 .report-delete-btn {
@@ -143,7 +145,7 @@
 
 /* Step 이미지 스타일 */
 .step-image {
-  width: 90%;
+  width: 40%;
   height: auto;
   margin-top: 12px;
   margin-left: auto;  /* 왼쪽 마진 자동 */
