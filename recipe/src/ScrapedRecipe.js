@@ -16,7 +16,7 @@ export default function ScrapedRecipe() {
     if (user) {
       setLoading(true);
       // 1. ScrapController의 GET API 호출: 스크랩한 레시피 ID 목록을 가져옴
-      fetch(`${API_URL}/api/scrap/${user.id}`)
+      fetch(`${API_URL}/api/scrap/${user.userId}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error("스크랩한 레시피를 불러오지 못했습니다.");
@@ -32,7 +32,7 @@ export default function ScrapedRecipe() {
             // 2. 각 레시피 ID에 대해, 레시피 상세 정보를 가져오는 API 호출
             Promise.all(
               recipeIds.map((recipeId) =>
-                fetch(`${API_URL}/api/recipes/${recipeId}?userId=${user.id}`)
+                fetch(`${API_URL}/api/recipes/${recipeId}?userId=${user.userId}`)
                   .then((res) => {
                     if (!res.ok) {
                       throw new Error("레시피를 불러오지 못했습니다.");
