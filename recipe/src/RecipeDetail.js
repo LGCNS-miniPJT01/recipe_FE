@@ -61,7 +61,7 @@ export default function RecipeDetail() {
       })
       .catch((error) => console.error("Error fetching view count:", error));
 
-      fetch(`http://localhost:8080/api/comments/recipe/${id}`)
+      fetch(`${API_URL}/api/comments/recipe/${id}`)
       .then((response) => response.json())
       .then((data) => setComments(data))
       .catch((error) => console.error("Error fetching comments:", error));
@@ -86,7 +86,7 @@ export default function RecipeDetail() {
       return;
     }
 
-    fetch(`http://localhost:8080/api/favorites/${id}?userId=6`, {
+    fetch(`${API_URL}/api/favorites/${id}?userId=6`, {
       method: "POST",
     })
       .then((response) => {
@@ -105,7 +105,7 @@ export default function RecipeDetail() {
           setIsLiked(true);
         } else if (data === "Already liked this recipe") {
           // 이미 좋아요한 경우 DELETE 요청 보내기
-          fetch(`http://localhost:8080/api/favorites/${id}?userId=6`, {
+          fetch(`${API_URL}/api/favorites/${id}?userId=6`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",

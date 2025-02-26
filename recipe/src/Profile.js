@@ -15,7 +15,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (user && user.id) {
-      fetch(`http://localhost:8080/api/users/detail/6`)
+      fetch(`${API_URL}/api/users/detail/6`)
         .then((response) => response.json())
         .then((data) => {
           setCurrentUser({
