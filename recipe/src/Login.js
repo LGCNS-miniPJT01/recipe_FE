@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import "./Login.css";
 import FormGroup from "./FormGroup";
+import API_URL from "./config";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,28 +18,9 @@ export default function Login() {
     setError("");
     setLoading(true);
 
-    // 테스트용: 차단된 계정이면 로그인 차단
-    if (email === "blocked@test.com") {
-      setError("차단된 계정입니다.");
-      setLoading(false);
-      return;
-    }
-    // 테스트용 더미 계정
-    if (email === "hong@test.com" && password === "hong123") {
-      setUser({ email: "hong@test.com", role: "member" });
-      navigate("/");
-      setLoading(false);
-      return;
-    } else if (email === "admin@test.com" && password === "admin123") {
-      setUser({ email: "admin@test.com", role: "admin" });
-      navigate("/");
-      setLoading(false);
-      return;
-    }
-
     try {
       // 백엔드 API에 로그인 요청
-      const response = await fetch("http://localhost:8080/api/users/login", {
+      const response = await fetch(`${API_URL}/api/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
