@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PiBowlFood } from "react-icons/pi";
 import { LuBeef } from "react-icons/lu";
@@ -81,6 +81,7 @@ export default function Main() {
   const [recipes, setRecipes] = useState([]);
   const [searchOption, setSearchOption] = useState("전체 검색");
   const [searchFilter, setSearchFilter] = useState("전체");
+  const [topRecipes, setTopRecipes] = useState([])
 
   // 검색 옵션
   const searchOptionOptions = ["음식명으로 검색", "재료로 검색"];
@@ -135,6 +136,25 @@ export default function Main() {
       console.error("검색 중 오류 발생:", error);
     }
   };
+
+    // 인기 레시피 불러오기
+    const fetchTopRecipes = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/recipes/topliked`);
+        if (!response.ok) {
+          throw new Error("API 요청 실패");
+        }
+        const data = await response.json();
+        console.log("인기 레시피:", data); // 응답 데이터 확인
+        setTopRecipes(data);  // 인기 레시피 데이터를 상태에 저장
+      } catch (error) {
+        console.error("인기 레시피 로드 실패:", error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchTopRecipes();
+    }, []);
 
   return (
     <div className="main-container">
@@ -197,7 +217,28 @@ export default function Main() {
 ) : (
   <h2>검색 결과가 없습니다.</h2> // 검색 결과가 없을 경우 메시지 표시
 )}
+      {/* 인기 레시피 영역 */}
+      <div className="top-recipes">
+          <h2>인기 레시피</h2>
+          <div className="recipes-results">
+            {topRecipes.length > 0 ? (
+              topRecipes.map((recipe) => (
+                <div
+                  key={recipe.recipeId}
+                  className="recipe-card"
+                  onClick={() => navigate(`/recipe/${recipe.recipeId}`)}
+                >
+                  <img src={recipe.imageLarge || "default-image.jpg"} alt={recipe.title} />
+                  <h3>{recipe.title}</h3>
+                </div>
+              ))
+            ) : (
+              <p>인기 레시피를 불러오는 중입니다...</p>
+            )}
+          </div>
+        </div>
       </div>
+
     </div>
   );
 }
