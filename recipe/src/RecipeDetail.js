@@ -88,20 +88,54 @@ export default function RecipeDetail() {
     fetch(`http://localhost:8080/api/favorites/${id}?userId=6`, {
       method: "POST",
     })
-      .then((response) => response.json())
+      .then((response) => {
+        // 응답이 JSON인지 확인
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return response.json(); // JSON이면 파싱하여 반환
+        } else {
+          return response.text(); // 일반 텍스트 응답
+        }
+      })
       .then((data) => {
-        if (data.message === "좋아요 추가 완료") {
+        if (typeof data === "object" && data.message === "좋아요 추가 완료") {
           setLikeMessage("레시피에 좋아요를 누르셨습니다.");
-          setFavoriteCount((prev) => prev + 1);  // 좋아요 개수 증가
+          setFavoriteCount((prev) => prev + 1); // 좋아요 개수 증가
           setIsLiked(true);
-        } else if (data.message === "이미 좋아요한 레시피 입니다.") {
-          setLikeMessage("이미 좋아요한 레시피 입니다.");
+        } else if (data === "Already liked this recipe") {
+          // 이미 좋아요한 경우 DELETE 요청 보내기
+          fetch(`http://localhost:8080/api/favorites/${id}?userId=6`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((deleteResponse) => deleteResponse.json())
+            .then((deleteData) => {
+              if (deleteData.message === "좋아요 취소 완료") {
+                setLikeMessage("좋아요를 취소했습니다.");
+                //setFavoriteCount((prev) => Math.max(prev - 1, 0)); // 좋아요 개수 감소 (최소 0 유지)
+                //setIsLiked(false);
+              } else {
+                console.log(11);
+                setLikeMessage("좋아요 취소에 실패했습니다.");
+              }
+            })
+            .catch((error) => {
+              console.log(12);
+              console.log(error);
+              console.error("Error removing favorite:", error);
+              setLikeMessage("좋아요 취소에 실패했습니다.");
+            });
+        } else {
+          setLikeMessage("오류가 발생했습니다.");
         }
       })
       .catch((error) => {
         console.error("Error adding favorite:", error);
-        setLikeMessage("이미 좋아요한 레시피 입니다.");
+        setLikeMessage("오류가 발생했습니다.");
       });
+    
   };
 
   const toggleSave = () => {
@@ -270,7 +304,7 @@ export default function RecipeDetail() {
               ) : (
                 comments.map((comment, index) => (
                   <div key={index} className="comment-item">
-                    <span>{comment.text}</span>
+                    <span>{comment.content}</span>
                     {user && comment.author === user.email ? (
                       <button
                         className="comment-action-btn"

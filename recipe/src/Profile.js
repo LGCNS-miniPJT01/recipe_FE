@@ -8,27 +8,53 @@ export default function Profile() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
-  // 기존 dummy 데이터
-  const dummyUser = {
-    name: "홍길동",
-    email: "hong@example.com",
-    phone: "01012345678",
-    profilePic: "https://via.placeholder.com/150?text=Profile"
-  };
+  // 기본 사용자 정보 (초기값)
 
-  const currentUser = user || dummyUser;
+  const [currentUser, setCurrentUser] = useState(user);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 프로필 수정 관련 상태
+  useEffect(() => {
+    if (user && user.id) {
+      fetch(`http://localhost:8080/api/users/detail/6`)
+        .then((response) => response.json())
+        .then((data) => {
+          setCurrentUser({
+            name: data.username,
+            email: data.email,
+            phone: data.phone,
+            profilePic: data.profilePic
+          });
+        })
+        .catch((error) => console.error("사용자 정보 불러오기 실패:", error))
+        .finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
+    }
+  }, [user]);
+  
+  // 수정 모드 관련 상태
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(currentUser.name);
-  const [editedEmail, setEditedEmail] = useState(currentUser.email);
-  const [editedPhone, setEditedPhone] = useState(currentUser.phone);
-  // 각 항목의 개별 편집 모드
+  const [editedName, setEditedName] = useState("");
+  const [editedEmail, setEditedEmail] = useState("");
+  const [editedPhone, setEditedPhone] = useState("");
   const [editName, setEditName] = useState(false);
   const [editEmail, setEditEmail] = useState(false);
   const [editPhone, setEditPhone] = useState(false);
 
-  // 더미 데이터: 스크랩, 등록 레시피 (이전과 동일)
+  useEffect(() => {
+    setEditedName(currentUser.name);
+    setEditedEmail(currentUser.email);
+    setEditedPhone(currentUser.phone);
+  }, [currentUser]);
+
+  const toggleEditing = () => {
+    setIsEditing(!isEditing);
+    setEditName(false);
+    setEditEmail(false);
+    setEditPhone(false);
+  };
+
+  // 레시피 데이터 (스크랩 & 등록한 레시피)
   const dummyScrapedRecipes = [
     { id: "1", title: "두부 국", image: "https://via.placeholder.com/300?text=두부+국" },
     { id: "2", title: "두부 찜", image: "https://via.placeholder.com/300?text=두부+찜" }
@@ -46,22 +72,12 @@ export default function Profile() {
     setAddedRecipes(dummyAddedRecipes);
   }, []);
 
-  const toggleEditing = () => {
-    // 수정 모드를 토글하면서 개별 편집 모드도 초기화
-    setIsEditing(!isEditing);
-    setEditName(false);
-    setEditEmail(false);
-    setEditPhone(false);
-  };
+  if (isLoading) return <p>로딩 중...</p>;
 
   return (
     <div className="profile-container">
       <div className="profile-sidebar">
-        <img
-          src={currentUser.profilePic}
-          alt="프로필"
-          className="profile-pic"
-        />
+        <img src={currentUser.profilePic} alt="프로필" className="profile-pic" />
         <div className="profile-info">
           <p>
             <strong>이름:</strong>{" "}
@@ -75,12 +91,9 @@ export default function Profile() {
               />
             ) : (
               <>
-                <span>{editedName}</span>
+                <span>{currentUser.name}</span>
                 {isEditing && (
-                  <button
-                    className="edit-icon-btn"
-                    onClick={() => setEditName(true)}
-                  >
+                  <button className="edit-icon-btn" onClick={() => setEditName(true)}>
                     <HiOutlinePencilSquare size={18} />
                   </button>
                 )}
@@ -99,12 +112,9 @@ export default function Profile() {
               />
             ) : (
               <>
-                <span>{editedEmail}</span>
+                <span>{currentUser.email}</span>
                 {isEditing && (
-                  <button
-                    className="edit-icon-btn"
-                    onClick={() => setEditEmail(true)}
-                  >
+                  <button className="edit-icon-btn" onClick={() => setEditEmail(true)}>
                     <HiOutlinePencilSquare size={18} />
                   </button>
                 )}
@@ -123,12 +133,9 @@ export default function Profile() {
               />
             ) : (
               <>
-                <span>{editedPhone}</span>
+                <span>{currentUser.phone}</span>
                 {isEditing && (
-                  <button
-                    className="edit-icon-btn"
-                    onClick={() => setEditPhone(true)}
-                  >
+                  <button className="edit-icon-btn" onClick={() => setEditPhone(true)}>
                     <HiOutlinePencilSquare size={18} />
                   </button>
                 )}
@@ -140,17 +147,14 @@ export default function Profile() {
           {isEditing ? "프로필 저장" : "프로필 수정"}
         </button>
       </div>
+
       <div className="profile-main">
         <div className="recipes-section">
           <h2>내가 스크랩한 레시피</h2>
           {scrapedRecipes.length > 0 ? (
             <div className="recipes-grid">
               {scrapedRecipes.map((recipe) => (
-                <div
-                  key={recipe.id}
-                  className="recipe-card"
-                  onClick={() => navigate(`/recipe/${recipe.id}`)}
-                >
+                <div key={recipe.id} className="recipe-card" onClick={() => navigate(`/recipe/${recipe.id}`)}>
                   <img src={recipe.image} alt={recipe.title} />
                   <h3>{recipe.title}</h3>
                 </div>
@@ -160,16 +164,13 @@ export default function Profile() {
             <p>스크랩한 레시피가 없습니다.</p>
           )}
         </div>
+
         <div className="recipes-section">
           <h2>내가 등록한 레시피</h2>
           {addedRecipes.length > 0 ? (
             <div className="recipes-grid">
               {addedRecipes.map((recipe) => (
-                <div
-                  key={recipe.id}
-                  className="recipe-card"
-                  onClick={() => navigate(`/recipe/${recipe.id}`)}
-                >
+                <div key={recipe.id} className="recipe-card" onClick={() => navigate(`/recipe/${recipe.id}`)}>
                   <img src={recipe.image} alt={recipe.title} />
                   <h3>{recipe.title}</h3>
                 </div>
