@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./FindEmail.css";
 import FormGroup from "./FormGroup";
+import API_URL from "./config";
 
 export default function FindEmail() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function FindEmail() {
 
     try {
       // fetch로 POST 요청 보내기
-      const response = await fetch("http://localhost:8080/api/users/findemail", {
+      const response = await fetch(`${API_URL}/api/users/findemail`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

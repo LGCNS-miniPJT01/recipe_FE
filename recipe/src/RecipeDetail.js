@@ -5,6 +5,7 @@ import { MdOutlineRemoveRedEye, MdOutlineFileUpload } from "react-icons/md";
 import { BiLike } from "react-icons/bi";
 import { FaRegStar } from "react-icons/fa";
 import "./RecipeDetail.css";
+import API_URL from "./config";
 
 export default function RecipeDetail() {
   const { id } = useParams();
@@ -35,7 +36,7 @@ export default function RecipeDetail() {
   const [commentReportIndex, setCommentReportIndex] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/recipes/${id}?userId=6`)
+    fetch(`${API_URL}/api/recipes/${id}?userId=6`)
       .then((response) => response.json())
       .then((data) => {
         setRecipe(data);
@@ -44,7 +45,7 @@ export default function RecipeDetail() {
       .catch((error) => console.error("Error fetching recipe data:", error));
 
     // 좋아요 개수 가져오기 API 호출
-    fetch(`http://localhost:8080/api/favorites/count/${id}`)
+    fetch(`${API_URL}/api/favorites/count/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setFavoriteCount(data.count);  // count 값을 favoriteCount 상태에 저장
@@ -52,7 +53,7 @@ export default function RecipeDetail() {
       .catch((error) => console.error("Error fetching favorite count:", error));
 
     // 조회수 가져오기 API 호출
-    fetch(`http://localhost:8080/api/recipes/${id}/views`)
+    fetch(`${API_URL}/api/recipes/${id}/views`)
       .then((response) => response.json())
       .then((data) => {
         setViews(data);  // 조회수 상태에 값 저장
