@@ -9,6 +9,11 @@ export default function Profile() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
+  const storedData = localStorage.getItem("jwt");
+  const parsedData = JSON.parse(storedData);
+  const userId = parsedData.userId;
+  const token = parsedData.token;
+
   // 기본 사용자 정보 (초기값)
 
   const [currentUser, setCurrentUser] = useState(user);
@@ -16,7 +21,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (user && user.id) {
-      fetch(`${API_URL}/api/users/detail/6`)
+      fetch(`${API_URL}/api/users/detail/${userId}`)
         .then((response) => response.json())
         .then((data) => {
           setCurrentUser({

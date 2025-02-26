@@ -11,6 +11,10 @@ export default function RecipeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
+  const storedData = localStorage.getItem("jwt");
+  const parsedData = JSON.parse(storedData);
+  const userId = parsedData.userId;
+  const token = parsedData.token;
 
   const [recipe, setRecipe] = useState(null);
   const [views, setViews] = useState(0);  // 조회수 상태
@@ -37,7 +41,7 @@ export default function RecipeDetail() {
   const [commentReportIndex, setCommentReportIndex] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/recipes/${id}?userId=6`)
+    fetch(`${API_URL}/api/recipes/${id}?userId=${userId}`)
       .then((response) => response.json())
       .then((data) => {
         setRecipe(data);
@@ -54,7 +58,14 @@ export default function RecipeDetail() {
       .catch((error) => console.error("Error fetching favorite count:", error));
 
     // 조회수 가져오기 API 호출
-    fetch(`${API_URL}/api/recipes/${id}/views`)
+    fetch(`${API_URL}/api/recipes/${id}/views`,
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`,  // Bearer 방식으로 토큰 전달
+          "Content-Type": "application/json",
+        }
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         setViews(data);  // 조회수 상태에 값 저장
@@ -86,7 +97,7 @@ export default function RecipeDetail() {
       return;
     }
 
-    fetch(`${API_URL}/api/favorites/${id}?userId=6`, {
+    fetch(`${API_URL}/api/favorites/${id}?userId=${userId}`, {
       method: "POST",
     })
       .then((response) => {
@@ -105,7 +116,7 @@ export default function RecipeDetail() {
           setIsLiked(true);
         } else if (data === "Already liked this recipe") {
           // 이미 좋아요한 경우 DELETE 요청 보내기
-          fetch(`${API_URL}/api/favorites/${id}?userId=6`, {
+          fetch(`${API_URL}/api/favorites/${id}?userId=${userId}`, {
             method: "DELETE",
           })
             .then((deleteResponse) => deleteResponse.json())
@@ -211,7 +222,7 @@ export default function RecipeDetail() {
       const encodedContent = encodeURIComponent(newComment.trim());  // 입력된 댓글을 URL 안전하게 인코딩
   
       // 댓글 추가 API 요청
-      fetch(`${API_URL}/api/comments/${id}?content=${encodedContent}&userId=6`, {
+      fetch(`${API_URL}/api/comments/${id}?content=${encodedContent}&userId=${userId}`, {
         method: "POST",
       })
         .then((response) => {

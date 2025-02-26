@@ -21,6 +21,11 @@ export default function AddRecipe() {
   const [mainImageFile, setMainImageFile] = useState(null);
   const [mainImagePreview, setMainImagePreview] = useState("");
 
+  const storedData = localStorage.getItem("jwt");
+  const parsedData = JSON.parse(storedData);
+  const userId = parsedData.userId;
+  const token = parsedData.token;
+
   // steps를 배열로 관리: 각 step은 description, imageFile, imagePreview를 가짐
   const [steps, setSteps] = useState([
     { description: "", imageFile: null, imagePreview: "" }
@@ -125,7 +130,7 @@ export default function AddRecipe() {
     };
   
     // POST 요청 보내기
-    fetch(`${API_URL}/api/recipes/6`, {
+    fetch(`${API_URL}/api/recipes/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
