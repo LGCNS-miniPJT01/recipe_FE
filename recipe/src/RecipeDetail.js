@@ -211,7 +211,7 @@ export default function RecipeDetail() {
       const encodedContent = encodeURIComponent(newComment.trim());  // 입력된 댓글을 URL 안전하게 인코딩
   
       // 댓글 추가 API 요청
-      fetch(`http://localhost:8080/api/comments/${id}?content=${encodedContent}&userId=6`, {
+      fetch(`${API_URL}/api/comments/${id}?content=${encodedContent}&userId=6`, {
         method: "POST",
       })
         .then((response) => {
