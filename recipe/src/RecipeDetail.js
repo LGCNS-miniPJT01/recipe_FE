@@ -90,59 +90,62 @@ export default function RecipeDetail() {
     }
   }, [recipe, viewCountIncremented]);
 
-  const toggleLike = () => {
+  const toggleLike = async () => {
     if (!user) {
       alert("로그인이 필요합니다.");
       navigate("/login", { state: { redirectBack: window.location.pathname } });
       return;
     }
-
-    fetch(`${API_URL}/api/favorites/${id}?userId=${userId}`, {
-      method: "POST",
-    })
-      .then((response) => {
-        // 응답이 JSON인지 확인
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          return response.json(); // JSON이면 파싱하여 반환
-        } else {
-          return response.text(); // 일반 텍스트 응답
-        }
-      })
-      .then((data) => {
-        if (typeof data === "object" && data.message === "좋아요 추가 완료") {
-          setLikeMessage("레시피에 좋아요를 누르셨습니다.");
-          setFavoriteCount((prev) => prev + 1); // 좋아요 개수 증가
-          setIsLiked(true);
-        } else if (data === "Already liked this recipe") {
-          // 이미 좋아요한 경우 DELETE 요청 보내기
-          fetch(`${API_URL}/api/favorites/${id}?userId=${userId}`, {
-            method: "DELETE",
-          })
-            .then((deleteResponse) => deleteResponse.json())
-            .then((deleteData) => {
-              if (deleteData.message === "좋아요 취소 완료") {
-                setLikeMessage("좋아요를 취소했습니다.");
-                setFavoriteCount((prev) => Math.max(prev - 1, 0)); // 좋아요 개수 감소 (최소 0 유지)
-                setIsLiked(false);
-              } else {
-                setLikeMessage("좋아요 취소에 실패했습니다.");
-              }
-            })
-            .catch((error) => {
-              console.error("Error removing favorite:", error);
-              setLikeMessage("좋아요 취소에 실패했습니다.");
-            });
-        } else {
-          setLikeMessage("오류가 발생했습니다.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error adding favorite:", error);
-        setLikeMessage("오류가 발생했습니다.");
+  
+    try {
+      // 사용자가 좋아요를 눌렀는지 확인하는 GET 요청
+      const response = await fetch(`${API_URL}/api/favorites/users/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       });
-    
+  
+      if (!response.ok) {
+        throw new Error("좋아요 상태 확인 실패");
+      }
+  
+      const data = await response.json();
+      const userLiked = data.some((fav) => fav.userId === userId);
+      console.log(userLiked);
+      if (userLiked) {
+        // 좋아요를 이미 눌렀다면 DELETE 요청
+        const deleteResponse = await fetch(`${API_URL}/api/favorites/${id}?userId=${userId}`, {
+          method: "DELETE",
+        });
+  
+        if (!deleteResponse.ok) {
+          throw new Error("좋아요 취소 실패");
+        }
+  
+        setLikeMessage("좋아요를 취소했습니다.");
+        setFavoriteCount((prev) => Math.max(prev - 1, 0));
+        setIsLiked(false);
+      } else {
+        // 좋아요가 없으면 POST 요청
+        const postResponse = await fetch(`${API_URL}/api/favorites/${id}?userId=${userId}`, {
+          method: "POST",
+        });
+  
+        if (!postResponse.ok) {
+          throw new Error("좋아요 추가 실패");
+        }
+  
+        setLikeMessage("레시피에 좋아요를 누르셨습니다.");
+        setFavoriteCount((prev) => prev + 1);
+        setIsLiked(true);
+      }
+    } catch (error) {
+      console.error("좋아요 처리 중 오류 발생:", error);
+      setLikeMessage("오류가 발생했습니다.");
+    }
   };
+  
 
   const toggleSave = () => {
     if (!user) {
