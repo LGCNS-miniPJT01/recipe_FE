@@ -3,6 +3,7 @@ import { UserContext } from "./UserContext";
 import { useNavigate } from "react-router-dom";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import "./Profile.css";
+import API_URL from "./config";
 
 export default function Profile() {
   const { user } = useContext(UserContext);
