@@ -107,24 +107,18 @@ export default function RecipeDetail() {
           // 이미 좋아요한 경우 DELETE 요청 보내기
           fetch(`${API_URL}/api/favorites/${id}?userId=6`, {
             method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
           })
             .then((deleteResponse) => deleteResponse.json())
             .then((deleteData) => {
               if (deleteData.message === "좋아요 취소 완료") {
                 setLikeMessage("좋아요를 취소했습니다.");
-                //setFavoriteCount((prev) => Math.max(prev - 1, 0)); // 좋아요 개수 감소 (최소 0 유지)
-                //setIsLiked(false);
+                setFavoriteCount((prev) => Math.max(prev - 1, 0)); // 좋아요 개수 감소 (최소 0 유지)
+                setIsLiked(false);
               } else {
-                console.log(11);
                 setLikeMessage("좋아요 취소에 실패했습니다.");
               }
             })
             .catch((error) => {
-              console.log(12);
-              console.log(error);
               console.error("Error removing favorite:", error);
               setLikeMessage("좋아요 취소에 실패했습니다.");
             });
@@ -214,14 +208,33 @@ export default function RecipeDetail() {
       return;
     }
     if (newComment.trim()) {
-      const commentObj = { text: newComment.trim(), author: user.email };
-      setComments([...comments, commentObj]);
-      setNewComment("");
-      setTimeout(() => {
-        commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+      const encodedContent = encodeURIComponent(newComment.trim());  // 입력된 댓글을 URL 안전하게 인코딩
+  
+      // 댓글 추가 API 요청
+      fetch(`http://localhost:8080/api/comments/${id}?content=${encodedContent}&userId=6`, {
+        method: "POST",
+      })
+        .then((response) => {
+          if (!response.ok) {
+            // 상태 코드가 200이 아니면 오류 처리
+            throw new Error('댓글 추가 실패: ' + response.statusText);
+          }
+          return response.text();  // JSON이 아닌 텍스트 응답을 먼저 받아봄
+        })
+        .then(() => {
+          alert("댓글을 등록하셨습니다.");  // 댓글 등록 성공 메시지
+          window.location.reload();  // 페이지 새로고침
+        })
+        .catch((error) => {
+          console.error("Error adding comment:", error);
+          alert("댓글 등록에 실패했습니다.");
+        });
     }
   };
+  
+  
+  
+  
 
   return (
     <div className="recipe-detail-container">
