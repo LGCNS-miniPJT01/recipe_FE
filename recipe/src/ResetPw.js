@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // 📌 useLocation 추가
 import "./ResetPw.css";
 import FormGroup from "./FormGroup";
+import API_URL from "./config";
 
 const ResetPw = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const ResetPw = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/resetpassword", {
+      const response = await fetch(`${API_URL}/api/users/resetpassword`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

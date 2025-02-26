@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
 import FormGroup from "./FormGroup";
+import API_URL from "./config";
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -39,7 +40,7 @@ const SignUp = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8080/api/users/register", {
+      const response = await fetch(`${API_URL}/api/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

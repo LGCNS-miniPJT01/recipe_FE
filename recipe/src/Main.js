@@ -4,6 +4,7 @@ import { PiBowlFood } from "react-icons/pi";
 import { LuBeef } from "react-icons/lu";
 import { CiSearch } from "react-icons/ci";
 import "./Main.css";
+import API_URL from "./config";
 
 // CustomSelect 컴포넌트 (재사용 가능)
 function CustomSelect({ options, placeholder, value, onChange }) {
@@ -90,7 +91,7 @@ export default function Main() {
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    let apiUrl = "http://localhost:8080/api/recipesearch";
+    let apiUrl = `${API_URL}/api/recipesearch`;
     const params = new URLSearchParams();
 
     if (query.trim() !== "") {
@@ -98,19 +99,19 @@ export default function Main() {
     }
 
     if (searchOption === "음식명으로 검색") {
-      apiUrl = "http://localhost:8080/api/recipesearch/title";
+      apiUrl = `${API_URL}/api/recipesearch/title`;
       params.append("title", query);
     } else if (searchOption === "재료로 검색") {
-      apiUrl = "http://localhost:8080/api/recipesearch/ingredients";
+      apiUrl = `${API_URL}/api/recipesearch/ingredients`;
       params.append("ingredient", query);
     }
 
     if (searchFilter !== "전체") {
       if (searchOption === "음식명으로 검색" || searchOption === "재료로 검색") {
-        apiUrl = searchOption === "음식명으로 검색" ? "http://localhost:8080/api/recipesearch/categorytitle" : "http://localhost:8080/api/recipesearch/categoryingredient";
+        apiUrl = searchOption === "음식명으로 검색" ? `${API_URL}/api/recipesearch/categorytitle` : `${API_URL}/api/recipesearch/categoryingredient`;
         params.append("category", searchFilter);
       } else {
-        apiUrl = "http://localhost:8080/api/recipesearch/category";
+        apiUrl = `${API_URL}/api/recipesearch/category`;
         params.append("category", searchFilter);
       }
     }

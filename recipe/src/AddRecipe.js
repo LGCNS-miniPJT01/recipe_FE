@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import "./AddRecipe.css";
+import API_URL from "./config";
 
 export default function AddRecipe() {
   const navigate = useNavigate();
@@ -124,7 +125,7 @@ export default function AddRecipe() {
     };
   
     // POST 요청 보내기
-    fetch("http://localhost:8080/api/recipes/6", {
+    fetch(`${API_URL}/api/recipes/6`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./FindPw.css";
 import FormGroup from "./FormGroup";
+import API_URL from "./config";
 
 const FindPW = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
@@ -19,7 +20,7 @@ const FindPW = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/findpwuser", {
+      const response = await fetch(`${API_URL}/api/users/findpwuser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
