@@ -2,28 +2,11 @@ import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import "./ScrapedRecipe.css";
+import API_URL from "./config";
 
 export default function ScrapedRecipe() {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
-
-  const dummyScrapedRecipes = [
-    {
-      id: "1",
-      title: "두부 국",
-      image: "https://via.placeholder.com/300?text=두부+국"
-    },
-    {
-      id: "2",
-      title: "두부 찜",
-      image: "https://via.placeholder.com/300?text=두부+찜"
-    },
-    {
-      id: "3",
-      title: "두부 반찬",
-      image: "https://via.placeholder.com/300?text=두부+반찬"
-    }
-  ];
 
   const [scrapedRecipes, setScrapedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,17 +15,49 @@ export default function ScrapedRecipe() {
   useEffect(() => {
     if (user) {
       setLoading(true);
-      // 실제 구현 시 API 호출 (여기서는 1초 후 dummy 데이터를 설정)
-      setTimeout(() => {
-        try {
-          // API 호출 성공 시:
-          setScrapedRecipes(dummyScrapedRecipes);
+      // 1. ScrapController의 GET API 호출: 스크랩한 레시피 ID 목록을 가져옴
+      fetch(`${API_URL}/api/scrap/${user.id}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("스크랩한 레시피를 불러오지 못했습니다.");
+          }
+          return response.json();
+        })
+        .then((recipeIds) => {
+          // recipeIds가 빈 배열이면 바로 상태 업데이트
+          if (recipeIds.length === 0) {
+            setScrapedRecipes([]);
+            setLoading(false);
+          } else {
+            // 2. 각 레시피 ID에 대해, 레시피 상세 정보를 가져오는 API 호출
+            Promise.all(
+              recipeIds.map((recipeId) =>
+                fetch(`${API_URL}/api/recipes/${recipeId}?userId=${user.id}`)
+                  .then((res) => {
+                    if (!res.ok) {
+                      throw new Error("레시피를 불러오지 못했습니다.");
+                    }
+                    return res.json();
+                  })
+              )
+            )
+              .then((recipeDetailsArray) => {
+                // 실제 반환되는 데이터 구조에 맞게 필드를 조정(예: RCP_SEQ, RCP_NM, MANUAL_IMG01)
+                setScrapedRecipes(recipeDetailsArray);
+                setLoading(false);
+              })
+              .catch((err) => {
+                console.error("레시피 상세 정보 불러오기 에러:", err);
+                setError("레시피를 불러오지 못했습니다.");
+                setLoading(false);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error("스크랩한 레시피 불러오기 에러:", err);
+          setError("스크랩한 레시피를 불러오지 못했습니다.");
           setLoading(false);
-        } catch (err) {
-          setError("데이터를 불러오지 못했습니다.");
-          setLoading(false);
-        }
-      }, 1000);
+        });
     } else {
       setScrapedRecipes([]);
       setLoading(false);
@@ -60,12 +75,15 @@ export default function ScrapedRecipe() {
         <div className="recipes-grid">
           {scrapedRecipes.map((recipe) => (
             <div
-              key={recipe.id}
+              key={recipe.RCP_SEQ}  // 고유 식별자는 RCP_SEQ 사용
               className="recipe-card"
-              onClick={() => navigate(`/recipe/${recipe.id}`)}
+              onClick={() => navigate(`/recipe/${recipe.RCP_SEQ}`)}
             >
-              <img src={recipe.image} alt={recipe.title} />
-              <h3>{recipe.title}</h3>
+              <img
+                src={recipe.MANUAL_IMG01 || "https://via.placeholder.com/300"}
+                alt={recipe.RCP_NM}
+              />
+              <h3>{recipe.RCP_NM}</h3>
             </div>
           ))}
         </div>
