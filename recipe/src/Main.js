@@ -226,7 +226,7 @@ export default function Main() {
                 <div
                   key={recipe.recipeId}
                   className="recipe-card"
-                  onClick={() => navigate(`/recipe/${recipe.recipeId}`)}
+                  onClick={() => navigate(`/recipe/${recipe.id}`)}
                 >
                   <img src={recipe.imageLarge || "default-image.jpg"} alt={recipe.title} />
                   <h3>{recipe.title}</h3>
