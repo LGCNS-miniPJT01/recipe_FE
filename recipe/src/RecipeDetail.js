@@ -147,14 +147,37 @@ export default function RecipeDetail() {
   };
   
 
-  const toggleSave = () => {
+  const toggleScrap = async () => {
     if (!user) {
       alert("로그인이 필요합니다.");
       navigate("/login", { state: { redirectBack: window.location.pathname } });
       return;
     }
-    setIsSaved(!isSaved);
+  
+    try {
+      // 스크랩을 추가 또는 취소하기 위한 API 요청
+      const response = await fetch(`${API_URL}/api/scrap/${id}?userId=${userId}`, {
+        method: isSaved ? "DELETE" : "POST",  // isSaved가 true일 때는 DELETE, false일 때는 POST
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("스크랩 처리 실패");
+      }
+  
+      setIsSaved(!isSaved);  // 스크랩 상태 변경
+      const message = isSaved ? "스크랩을 취소했습니다." : "레시피가 스크랩되었습니다.";
+      alert(message);  // 성공적인 스크랩 후 알림 메시지
+  
+    } catch (error) {
+      console.error("스크랩 처리 중 오류 발생:", error);
+      alert("이미 스크랩한 레시피입니다.");
+    }
   };
+  
 
   const handleShare = () => {
     navigator.clipboard
@@ -310,7 +333,7 @@ export default function RecipeDetail() {
             <span onClick={toggleLike} className={`stat-btn ${isLiked ? "active" : ""}`}>
               <BiLike size={20} /> {favoriteCount} {/* 좋아요 개수 표시 */}
             </span>
-            <span onClick={toggleSave} className={`stat-btn ${isSaved ? "active" : ""}`}>
+            <span onClick={toggleScrap} className={`stat-btn ${isSaved ? "active" : ""}`}>
               <FaRegStar size={20} />
             </span>
             <span onClick={handleShare} className="stat-btn">
